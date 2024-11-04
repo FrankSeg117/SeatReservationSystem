@@ -4,7 +4,7 @@ Welcome to our humble repository. Here, you will see the source code for our cou
 
 ## What is this project?
 
-In this project, we implemented a system for seat reservation in a football stadium. This system manages the available seats, client reservations, and a waitlist for a section that may be full. The system allows a user to reserve an available seat, cancel reservations, and see the availability of free seats. 
+In this project, we implemented a system for seat reservation in a baseball stadium. This system manages the available seats, client reservations, and a waitlist for a section that may be full. The system allows a user to reserve an available seat, cancel reservations, and see the availability of free seats. 
 
 ### Key Details
 
