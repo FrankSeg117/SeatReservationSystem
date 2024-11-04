@@ -7,9 +7,12 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Queue;
 
+import java.util.Scanner;
+import java.util.InputMismatchException;
+
 public class Stadium {
 
-    ////////In progress
+    ////////In progress////////
 
     public Set<Seat> seats = new HashSet<>(); //Set that stores all seats
 
@@ -21,5 +24,59 @@ public class Stadium {
 
     public Queue<Client> waitlist = new LinkedList<>(); //Para implementar la funcionalidad de deshacer, en la que se puede deshacer la última acción de reservación/cancelación
 
-    ////////
+    ///////////////////////////
+
+    //Hacemos algo tipo putty?
+    public static void main(String [] args) {  
+        boolean runflag = false;
+        Scanner scanner = new Scanner(System.in);
+        
+        //This asks operator to open or close the app
+        while (!runflag) {
+            System.out.println("Do you want to turn on the program? 1/0 \n1 for yes \n0 for no");
+            try {
+                int input = scanner.nextInt();
+                if (input == 1) { //if 1 open
+                    runflag = true;
+                    scanner.nextLine(); 
+
+                } else if (input == 0) { //if 0 close
+                    System.out.println("Closing...");
+                    scanner.close(); 
+                    return;
+                } else {    //if not 1 or 0 we ask again
+                    System.out.println("Please input either 1 or 0.");
+                    scanner.nextLine(); 
+                }
+            } catch (InputMismatchException e) { //if somehow something else is inputed we have the exception ready
+                System.out.println("Invalid input. Please enter either 1 or 0.");
+                scanner.nextLine(); 
+            }
+        }
+        String state = "MAIN";
+        String Cname = "";
+        String email = "";
+        String num = "";
+        try {
+            System.out.println("==== Welcome to the UPRM Baseball Stadium! ====");
+
+            
+            System.out.println("\nPlease enter the client's name: ");
+            Cname = scanner.nextLine();
+
+            System.out.println("\nPlease enter the client's email: ");
+            email = scanner.nextLine();
+
+            System.out.println("\nPlease enter the client's phone number: ");
+            num = scanner.nextLine();
+           
+        }
+        catch(InputMismatchException e){
+            System.out.println("Please input the correct information");
+        }
+        Client client  = new Client(Cname,email,num);
+
+
+
+    }
 }
