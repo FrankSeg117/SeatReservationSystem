@@ -53,8 +53,9 @@ public class Stadium {
                 scanner.nextLine(); 
             }
         }
-        String state = "MAIN";
-        String Cname = "";
+        String state = "MAIN"; //Esto es un place holder en caso que hagamos idea de switch cases 
+
+        String Cname = ""; //variables para crear y añadir cliente
         String email = "";
         String num = "";
         try {
