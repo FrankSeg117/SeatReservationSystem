@@ -22,7 +22,7 @@ Availability Check: Shows available sections and allows customer selection.
 
 ## Technical Implementation:  
 
-## Data Structures:  
+Data Structures:  
 Set: For available seats.  
 LinkedList: For reservation history.  
 HashMap: To associate customers with their seats.  
