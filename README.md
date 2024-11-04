@@ -8,6 +8,6 @@ In this project, we implemented a system for seat reservation in a football stad
 
 ## Members with their contact information:
 
-Tomás Gómez - Software Engineering Student              tomas.gomez1@upr.edu
-Jonathan González - Computer Engineering Student        jonathan.gonzalez57@upr.edu
-Frank Seguí - Computer Engineering Student              frank.segui1@upr.edu
+Tomás Gómez - Software Engineering Student              tomas.gomez1@upr.edu  
+Jonathan González - Computer Engineering Student        jonathan.gonzalez57@upr.edu  
+Frank Seguí - Computer Engineering Student              frank.segui1@upr.edu  
