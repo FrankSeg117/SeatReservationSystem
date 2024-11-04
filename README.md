@@ -1,10 +1,10 @@
-## Data Structures Proyect
+## Main course Data Structures Project
 
-Welcome to our humble repository, here you will see our source code for our course proyect of our data structures class.
+Welcome to our humble repository. Here, you will see the source code for our course project for our data structures class.
 
-## What is this proyect?
+## What is this project?
 
-In this proyect we implemented a system for seat reservation in a football stadium. This system manages the available seats, client reservations and a wait list for a section that may be full. The system allows an user to reserve an available seat, cancel reservations, and allows to see the availability of free seats. 
+In this project, we implemented a system for seat reservation in a football stadium. This system manages the available seats, client reservations, and a waitlist for a section that may be full. The system allows a user to reserve an available seat, cancel reservations, and see the availability of free seats. 
 
 ## Members with their contact information:
 
