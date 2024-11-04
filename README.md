@@ -1,18 +1,13 @@
-## Getting Started
+## Data Structures Proyect
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Welcome to our humble repository, here you will see our source code for our course proyect of our data structures class.
 
-## Folder Structure
+## What is this proyect?
 
-The workspace contains two folders by default, where:
+In this proyect we implemented a system for seat reservation in a football stadium. This system manages the available seats, client reservations and a wait list for a section that may be full. The system allows an user to reserve an available seat, cancel reservations, and allows to see the availability of free seats. 
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## Members with their contact information:
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+Tomás Gómez - Software Engineering Student              tomas.gomez1@upr.edu
+Jonathan González - Computer Engineering Student        jonathan.gonzalez57@upr.edu
+Frank Seguí - Computer Engineering Student              frank.segui1@upr.edu
