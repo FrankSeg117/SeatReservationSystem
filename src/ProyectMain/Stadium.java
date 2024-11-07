@@ -28,11 +28,34 @@ public class Stadium {
 
     //Hacemos algo tipo putty?
     public static void main(String [] args) {  
-        boolean runflag = false;
         Scanner scanner = new Scanner(System.in);
+    
         
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    //THIS IS AN ATTEMPT, WILL TRY NEW WAY        
         //This asks operator to open or close the app
+        boolean runflag = false;
         while (!runflag) {
+            
             System.out.println("Do you want to turn on the program? 1/0 \n1 for yes \n0 for no");
             try {
                 int input = scanner.nextInt();
@@ -76,7 +99,7 @@ public class Stadium {
             System.out.println("Please input the correct information");
         }
         Client client  = new Client(Cname,email,num);
-
+//ONE WAY OF DOING THINGS
 
 
     }
