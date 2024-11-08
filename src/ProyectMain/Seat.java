@@ -1,21 +1,21 @@
 package ProyectMain;
 
 public class Seat {
-    public String section;
+    public char section;
     public int row;
     public int seatNumber;
      
     //Constructor
-    public Seat (String sec, int r, int sN){
+    public Seat (char sec, int r, int sN){
         this.section = sec;
         this.row = r;
         this.seatNumber = sN;
     }
 
-    public String getSection() {
+    public char getSection() {
         return section;
     }
-    public void setSection(String section) {
+    public void setSection(char section) {
         this.section = section;
     }
     public int getRow() {
