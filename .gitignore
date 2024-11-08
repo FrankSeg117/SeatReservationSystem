@@ -9,3 +9,7 @@ bin/
 # Ignore IDE-specific files (optional)
 *.iml
 .idea/
+bin/App.class
+bin/ProyectMain/Client.class
+bin/ProyectMain/Seat.class
+bin/ProyectMain/Stadium.class
