@@ -26,13 +26,56 @@ public class Stadium {
 
     ///////////////////////////
 
+    public static void AddClient(){
+
+    }
+
     //Hacemos algo tipo putty?
     public static void main(String [] args) {  
-        Scanner scanner = new Scanner(System.in);
-    
-        
+        Scanner menu = new Scanner(System.in);
+        boolean AddC = false;
 
+        System.out.println("===UPRM Baseball Stadium Seat Manager===");
+        System.out.println("\nPlease Select an Option: ");
+        System.out.println("1. Reserve Seat" 
+        + "\n2. Cancel a Reservation"
+        + "\n3. Reservation History"
+        + "\n4. Undo Previous Reservation"
+        + "\n5. Wait List"
+        + "\n6. Close App");
 
+        try{
+            System.out.println("Enter Option Number: ");
+            int input = menu.nextInt();
+            switch (input) {
+                case 1:
+                    AddC = true;
+
+                    break;
+                case 2:
+                
+                    break;
+                case 3:
+
+                    break;
+                case 4:
+
+                    break;
+                case 5:
+
+                    break;
+                case 6:
+                    System.out.println("Closing Program...");
+                    return;
+                default:
+                
+                    break;
+            }
+
+        }
+        catch(InputMismatchException e) {
+            System.out.println("Invalid Input");
+        }
 
 
 
@@ -53,7 +96,7 @@ public class Stadium {
         
     //THIS IS AN ATTEMPT, WILL TRY NEW WAY        
         //This asks operator to open or close the app
-        boolean runflag = false;
+        /*boolean runflag = false;
         while (!runflag) {
             
             System.out.println("Do you want to turn on the program? 1/0 \n1 for yes \n0 for no");
@@ -100,7 +143,7 @@ public class Stadium {
         }
         Client client  = new Client(Cname,email,num);
 //ONE WAY OF DOING THINGS
-
+*/
 
     }
 }
