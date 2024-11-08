@@ -34,49 +34,49 @@ public class Stadium {
     public static void main(String [] args) {  
         Scanner menu = new Scanner(System.in);
         boolean AddC = false;
+        boolean MENU = true;
 
-        System.out.println("===UPRM Baseball Stadium Seat Manager===");
-        System.out.println("\nPlease Select an Option: ");
-        System.out.println("1. Reserve Seat" 
-        + "\n2. Cancel a Reservation"
-        + "\n3. Reservation History"
-        + "\n4. Undo Previous Reservation"
-        + "\n5. Wait List"
-        + "\n6. Close App");
+        while(MENU){
+            System.out.println("===UPRM Baseball Stadium Seat Manager===");
+            System.out.println("\nPlease Select an Option: ");
+            System.out.println("1. Reserve Seat" 
+            + "\n2. Cancel a Reservation"
+            + "\n3. Reservation History"
+            + "\n4. Undo Previous Reservation"
+            + "\n5. Wait List"
+            + "\n6. Close App");
 
-        try{
-            System.out.println("Enter Option Number: ");
-            int input = menu.nextInt();
-            switch (input) {
-                case 1:
-                    AddC = true;
-
-                    break;
-                case 2:
+            try{
+                System.out.println("Enter Option Number: ");
+                int input = menu.nextInt();
+                switch (input) {
+                    case 1:
+                        AddC = true;
+                    //Aqui method para add client
+                        break;
+                    case 2:
                 
-                    break;
-                case 3:
+                        break;
+                    case 3:
 
-                    break;
-                case 4:
+                        break;
+                    case 4:
 
-                    break;
-                case 5:
+                        break;
+                    case 5:
 
-                    break;
-                case 6:
-                    System.out.println("Closing Program...");
-                    return;
-                default:
-                
-                    break;
+                        break;
+                    case 6:
+                        System.out.println("Closing Program...");
+                        return;
+                    default:
+                        continue;
+                }
             }
-
+            catch(InputMismatchException e) {
+                System.out.println("Invalid Input");
+            }
         }
-        catch(InputMismatchException e) {
-            System.out.println("Invalid Input");
-        }
-
 
 
 
