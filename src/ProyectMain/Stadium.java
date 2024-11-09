@@ -55,7 +55,7 @@ public class Stadium {
     }
 
     public static void reserveSeat(){
-     
+    
     }
 
     public static void createSeats(){
