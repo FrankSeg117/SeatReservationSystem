@@ -313,7 +313,7 @@ public class Stadium {
                 row = 1;
             }
         }
-
+        
         row = 1;
         sec = 0;
         alpha = 'A';
