@@ -50,12 +50,12 @@ public class Stadium {
         catch(InputMismatchException e){
             System.out.println("Please input the correct information");
         }
-
+        menu.close();
         return new Client(Cname,email,num);
     }
 
-    public static void reserveSeat(){
-     
+    public static void reserveSeat(Client client){
+        
     }
 
     public static void createSeats(){
@@ -133,7 +133,7 @@ public class Stadium {
                     case 1:
                         AddC = true;
                         Client client  = addClient();
-                        reserveSeat();
+                        reserveSeat(client);
                     //Aqui method para add client
                         break;
                     case 2:
