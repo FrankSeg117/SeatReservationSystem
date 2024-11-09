@@ -34,7 +34,7 @@ public class Stadium {
         String num = "";
         Scanner menu = new Scanner(System.in);
         try {
-            System.out.println("==== Welcome to the UPRM Baseball Stadium! ====");
+            System.out.println("==== Adding Client ====");
 
             
             System.out.println("\nPlease enter the client's name: ");
