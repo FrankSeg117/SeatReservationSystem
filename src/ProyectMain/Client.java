@@ -11,5 +11,9 @@ public class Client {
         this.phonenum = pn;
     }
 
-
+    public String getName(){
+        return name;
+    }
+// hola frank salu2 tomas turbado
+// huh?
 }

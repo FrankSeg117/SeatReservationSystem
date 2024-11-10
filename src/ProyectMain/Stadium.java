@@ -6,10 +6,10 @@ import java.util.LinkedList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
-import java.util.Iterator;
+// import java.util.Iterator;
 import java.util.Comparator;
 
-import javax.print.FlavorException;
+// import javax.print.FlavorException;
 
 import java.util.Queue;
 
@@ -36,7 +36,7 @@ public class Stadium {
      * Linked Lists
      */
 
-    public LinkedList<String> log = new LinkedList<>(); // placeholder, may need to create a class for transactions
+    public LinkedList<Transaction> Tregister = new LinkedList<>(); // placeholder, may need to create a class for transactions
 
     /*
      * Hash Maps
@@ -76,12 +76,23 @@ public class Stadium {
     public static int secEFL = 0;
 
     public static boolean buy = false;
+    public static boolean show = false;
 
     public static Client client;
 
     public static void sPrint(String a) {System.out.println(a);} // Method to print faster like Python
-
     public static void clientPrint(Client c) {System.out.println(c.toString());}
+
+    public static void waitTime(int ms){
+        // Esto es parte de java para crear una breve pausa en pantalla para que se
+        // pueda mostrar un aviso de transaccion completada antes de volver al inicio
+        try { 
+            Thread.sleep(ms); // Pausa por "ms" milisegundos
+        }
+        catch (InterruptedException e) {
+                e.printStackTrace();
+        }
+    }
 
     public void AssignClientTOSeat(Client client, char section, String level) {
         if (level.equals("FIELD")) {
@@ -95,9 +106,10 @@ public class Stadium {
         }
     }
 
-    ///////////////////////////
-    public static void Select(Character sec) {
+    public static void Select(Character sec, int NofS) {
         Scanner SelectMenu = new Scanner(System.in);
+
+        boolean avl = false;
 
         int SN = 0; 
         
@@ -110,41 +122,67 @@ public class Stadium {
             }
         }
         secA.sort(Comparator.comparingInt(Seat::getSeatNumber));
+        
+        ArrayList<Seat> clientA = new ArrayList<>();
 
-        for (int i = 0; i < secA.size(); i++) {
-            System.out.print(secA.get(i).getSeatNumber() + " ");
-            if(i != secA.size()-1){
-                if(secA.get(i+1).getSeatNumber() - secA.get(i).getSeatNumber() > 1){
-                    for(int j = 1; secA.get(i+1).getSeatNumber() - secA.get(i).getSeatNumber()>j; j++){
-                        System.out.print("   ");
+        for(int k = 0; k<NofS; k++){
+            for (int i = 0; i < secA.size(); i++) {
+                System.out.print(secA.get(i).getSeatNumber() + " ");
+                if(i != secA.size()-1){
+                    if(secA.get(i+1).getSeatNumber() - secA.get(i).getSeatNumber() > 1){
+                        for(int j = 1; secA.get(i+1).getSeatNumber() - secA.get(i).getSeatNumber()>j; j++){
+                            System.out.print("   ");
+                        }
                     }
                 }
+                if (secA.get(i).getSeatNumber() % 25 == 0) {
+                    System.out.print("\n");
+                }
             }
-            if (secA.get(i).getSeatNumber() % 25 == 0) {
-                System.out.print("\n");
+            try {
+                System.out.println("\n==== Choose Seat ====");
+
+                System.out.println("\nSeat Number: ");
+
+                SN = SelectMenu.nextInt();
+
+                for (Seat a : fieldLevel) {
+                    if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                        avl = true;
+                    }
+                }
+
+                if(!avl){
+                    sPrint("\nSeat is not available.");
+                    sPrint("\nTry again.");
+                    waitTime(2000);
+
+                    k--;
+                }
+                if(avl){
+                    for (Seat a : fieldLevel) {
+                        if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                            clientA.add(a);
+                        }
+                    }
+                }
+                
+            } catch (InputMismatchException e) {
+                System.out.println("Please input the correct information");
             }
         }
-        try {
-            System.out.println("\n==== Choose Seat ====");
-
-            System.out.println("\nSeat Number: ");
-
-            SN = SelectMenu.nextInt();
-        } catch (InputMismatchException e) {
-            System.out.println("Please input the correct information");
-        }
-        BuyFL(SN, sec);
+        BuyFL(clientA, sec);
 
     }
 
-    public static void BuyFL(int SN, Character sec) {
+    public static void BuyFL(ArrayList<Seat> Seat, Character sec) {
         Scanner BuyMenu = new Scanner(System.in);
 
         String conf = "";
         try {
             System.out.println("==== Payment ====");
 
-            System.out.println("\nTotal Cost: $" + 300);
+            System.out.println("\nTotal Cost: $" + 300*Seat.size());
 
             System.out.println("\nDo you wish to confirm your payment?");
 
@@ -162,30 +200,22 @@ public class Stadium {
             System.out.println("\nReturrning Back...");
 
             for (Seat a : fieldLevel) {
-                if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                    FLseats.put(client, a);
-                    fieldLevel.remove(a);
-                    secFL.get(sec).add(a);
-                    break;
+                for(Seat b: Seat){
+                    if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
+                        FLseats.put(client, a);
+                        fieldLevel.remove(a);
+                        secFL.get(sec).add(a);
+                        break;
+                    }
                 }
             }
 
-            try { // Esto es parte de java para crear una breve pausa en pantalla para que se
-                  // pueda mostrar un aviso de transaccion completada antes de volver al inicio
-                Thread.sleep(2000); // Pause for 2 seconds
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+            waitTime(2000);
             return;
         }
         System.out.println("\nReturrning Back...");
 
-        try {
-            Thread.sleep(2000); // Pause for 2 seconds
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        waitTime(200);
     }
 
     public static Client addClient() {
@@ -212,7 +242,7 @@ public class Stadium {
         return new Client(Cname, email, num);
     }
 
-    public static void fieldLevelFun(Client client) {
+    public static void fieldLevelFun() {
         boolean MENU = true;
         Scanner menu = new Scanner(System.in);
         while (MENU) {
@@ -228,23 +258,34 @@ public class Stadium {
             try {
                 System.out.println("Enter Option Number: ");
                 int input = menu.nextInt();
+                int nSt;
                 switch (input) {
                     case 1:
                         // Aqui method para add client
-                        Select('A');
+                        sPrint("\nHow many seats do you want? ");
+                        nSt = menu.nextInt();
+                        Select('A',nSt);
 
                         break;
                     case 2:
-                        Select('B');
+                        sPrint("\nHow many seats do you want? ");
+                        nSt = menu.nextInt();
+                        Select('B', nSt);
                         break;
                     case 3:
-                        Select('C');
+                        sPrint("\nHow many seats do you want? ");
+                        nSt = menu.nextInt();
+                        Select('C', nSt);
                         break;
                     case 4:
-                        Select('D');
+                        sPrint("\nHow many seats do you want? ");
+                        nSt = menu.nextInt();
+                        Select('D', nSt);
                         break;
                     case 5:
-                        Select('E');
+                        sPrint("\nHow many seats do you want? ");
+                        nSt = menu.nextInt();
+                        Select('E', nSt);
                         break;
                     case 6:
                         return;
@@ -259,7 +300,7 @@ public class Stadium {
         // menu.close();
     }
 
-    public static void reserveSeat(Client client) {
+    public static void reserveSeat() {
         boolean MENU = true;
         Scanner menu = new Scanner(System.in);
         while (MENU) {
@@ -275,7 +316,7 @@ public class Stadium {
                 int input = menu.nextInt();
                 switch (input) {
                     case 1:
-                        fieldLevelFun(client);
+                        fieldLevelFun();
                         // Aqui method para add client
                         break;
                     case 2:
@@ -348,19 +389,25 @@ public class Stadium {
     }
 
     public static void showWaitingList() { // TODO : showWaitingList
+        show = true;
         Queue<Client> copy = new LinkedList<>(waitlist);
-        Client Frank = new Client("Frank", "a", "b");
-        Client Tom = new Client("Tom", "a", "b");
-        Client John = new Client("John", "a", "b");
+        while(show){
+            Client Frank = new Client("Frank", "a", "b");
+            Client Tom = new Client("Tom", "a", "b");
+            Client John = new Client("John", "a", "b");
 
-        copy.add(Frank);
-        copy.add(Tom);
-        copy.add(John);
-        
-        for (int i = 0; i < wl_Size; i++) {
-            clientPrint(copy.peek());
-            copy.remove();
+            copy.add(Frank);
+            copy.add(Tom);
+            copy.add(John);
+            
+            for (int i = 0; i < wl_Size; i++) {
+                clientPrint(copy.peek());
+                copy.remove();
+            }
+            
         }
+        show = false;
+        show ? 
     }
 
     // Hacemos algo tipo putty?
@@ -394,7 +441,7 @@ public class Stadium {
                     case 1: // Reserve Seat Client
                         AddC = true;
                         client = addClient();
-                        reserveSeat(client);
+                        reserveSeat();
                         // Aqui method para add client
                         break;
                     case 2: // Cancel a Reservation
@@ -406,7 +453,7 @@ public class Stadium {
 
                         break;
                     case 5: // Wait
-
+                        // showWaitingList();
                         break;
                     case 6:
                         System.out.println("Closing Program...");
