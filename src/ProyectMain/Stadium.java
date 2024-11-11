@@ -126,8 +126,23 @@ public class Stadium {
         ArrayList<Seat> clientA = new ArrayList<>();
 
         for(int k = 0; k<NofS; k++){
+            avl = false;
+            for(Seat a: secFL.get(sec)){
+                if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
+                    System.out.print("   ");
+                }
+            }
             for (int i = 0; i < secA.size(); i++) {
-                System.out.print(secA.get(i).getSeatNumber() + " ");
+                if(clientA.size() == 0){
+                    System.out.print(secA.get(i).getSeatNumber() + " ");
+                }else{
+                    if(clientA.contains(secA.get(i))){
+                        System.out.print("   ");
+                    }else{
+                        System.out.print(secA.get(i).getSeatNumber() + " ");
+                    }
+                }
+                
                 if(i != secA.size()-1){
                     if(secA.get(i+1).getSeatNumber() - secA.get(i).getSeatNumber() > 1){
                         for(int j = 1; secA.get(i+1).getSeatNumber() - secA.get(i).getSeatNumber()>j; j++){
@@ -137,7 +152,13 @@ public class Stadium {
                 }
                 if (secA.get(i).getSeatNumber() % 25 == 0) {
                     System.out.print("\n");
+                    for(Seat a: secFL.get(sec)){
+                        if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
+                            System.out.print("   ");
+                        }
+                    }
                 }
+                
             }
             try {
                 System.out.println("\n==== Choose Seat ====");
@@ -148,7 +169,9 @@ public class Stadium {
 
                 for (Seat a : fieldLevel) {
                     if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                        avl = true;
+                        if(!clientA.contains(a)){
+                            avl = true;
+                        }
                     }
                 }
 
@@ -199,8 +222,8 @@ public class Stadium {
 
             System.out.println("\nReturrning Back...");
 
-            for (Seat a : fieldLevel) {
-                for(Seat b: Seat){
+            for (Seat b : Seat) {
+                for(Seat a: fieldLevel){
                     if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
                         FLseats.put(client, a);
                         fieldLevel.remove(a);
@@ -387,28 +410,28 @@ public class Stadium {
             }
         }
     }
+    // public static void showWaitingList() { // TODO : showWaitingList
+    //     show = true;
+    //     Queue<Client> copy = new LinkedList<>(waitlist);
+    //     while(show){
+    //         Client Frank = new Client("Frank", "a", "b");
+    //         Client Tom = new Client("Tom", "a", "b");
+    //         Client John = new Client("John", "a", "b");
 
-    public static void showWaitingList() { // TODO : showWaitingList
-        show = true;
-        Queue<Client> copy = new LinkedList<>(waitlist);
-        while(show){
-            Client Frank = new Client("Frank", "a", "b");
-            Client Tom = new Client("Tom", "a", "b");
-            Client John = new Client("John", "a", "b");
+    //         copy.add(Frank);
+    //         copy.add(Tom);
+    //         copy.add(John);
+            
+    //         for (int i = 0; i < wl_Size; i++) {
+    //             clientPrint(copy.peek());
+    //             copy.remove();
+    //         }
+            
+    //     }
+    //     show = false;
+    //     show ? 
+    // }
 
-            copy.add(Frank);
-            copy.add(Tom);
-            copy.add(John);
-            
-            for (int i = 0; i < wl_Size; i++) {
-                clientPrint(copy.peek());
-                copy.remove();
-            }
-            
-        }
-        show = false;
-        show ? 
-    }
 
     // Hacemos algo tipo putty?
     public static void main(String[] args) {
