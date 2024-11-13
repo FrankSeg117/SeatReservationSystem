@@ -6,31 +6,46 @@ import java.util.LinkedList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
-// import java.util.Iterator;
 import java.util.Comparator;
-
-// import javax.print.FlavorException;
-
 import java.util.Queue;
-
 import java.util.Scanner;
 import java.util.InputMismatchException;
-
 import java.lang.Thread;
 
 public class Stadium {
     /*
      * Sets
      */
-
+    public static Set<Seat> mainLevel = new HashSet<>();
     public static Set<Seat> fieldLevel = new HashSet<>();
+    public static Set<Seat> grandStandLevel = new HashSet<>();
+    
     public static Set<Seat> FLA = new HashSet<>();
     public static Set<Seat> FLB = new HashSet<>();
     public static Set<Seat> FLC = new HashSet<>();
     public static Set<Seat> FLD = new HashSet<>();
     public static Set<Seat> FLE = new HashSet<>();
-    public static Set<Seat> mainLevel = new HashSet<>();
-    public static Set<Seat> grandStandLevel = new HashSet<>();
+
+    public static Set<Seat> MLA = new HashSet<>();
+    public static Set<Seat> MLB = new HashSet<>();
+    public static Set<Seat> MLC = new HashSet<>();
+    public static Set<Seat> MLD = new HashSet<>();
+    public static Set<Seat> MLE = new HashSet<>();
+    public static Set<Seat> MLF = new HashSet<>();
+    public static Set<Seat> MLG = new HashSet<>();
+    public static Set<Seat> MLH = new HashSet<>();
+    public static Set<Seat> MLI = new HashSet<>();
+    public static Set<Seat> MLJ = new HashSet<>();
+
+    public static Set<Seat> GSLA = new HashSet<>();
+    public static Set<Seat> GSLB = new HashSet<>();
+    public static Set<Seat> GSLC = new HashSet<>();
+    public static Set<Seat> GSLD = new HashSet<>();
+    public static Set<Seat> GSLE = new HashSet<>();
+    public static Set<Seat> GSLF = new HashSet<>();
+    public static Set<Seat> GSLG = new HashSet<>();
+    public static Set<Seat> GSLH = new HashSet<>();
+    
 
     /*
      * Linked Lists
@@ -43,9 +58,12 @@ public class Stadium {
      */
 
     public static HashMap<Client, Seat> FLseats = new HashMap<>(); // Structure to store Client in field level seats
-    public HashMap<Client, Seat> MLseats = new HashMap<>(); // Structure to store Client in main level seats
+    public static HashMap<Client, Seat> MLseats = new HashMap<>(); // Structure to store Client in main level seats
+    public static HashMap<Client, Seat> GSLseats = new HashMap<>(); // Structure to store Client in Grand Stand level seats
     public HashMap<Client, Seat> GSseats = new HashMap<>(); // Structure to store Client in grandstand level seats
     public static HashMap<Character, Set<Seat>> secFL = new HashMap<>();
+    public static HashMap<Character, Set<Seat>> secML = new HashMap<>();
+    public static HashMap<Character, Set<Seat>> secGSL = new HashMap<>();
 
     /*
      * Stacks
@@ -68,15 +86,8 @@ public class Stadium {
      */
 
     public static int wl_Size = waitlist.size();
-    public static int allFL = 0;
-    public static int secAFL = 0;
-    public static int secBFL = 0;
-    public static int secCFL = 0;
-    public static int secDFL = 0;
-    public static int secEFL = 0;
 
     public static boolean buy = false;
-    public static boolean show = false;
 
     public static Client client;
 
@@ -106,19 +117,33 @@ public class Stadium {
         }
     }
 
-    public static void Select(Character sec, int NofS) {
+    public static void Select(Character sec, int NofS, String A) {
         Scanner SelectMenu = new Scanner(System.in);
-
         boolean avl = false;
-
         int SN = 0; 
         
-        System.out.println("Available Seats:");
+        sPrint("Available Seats:");
 
         ArrayList<Seat> secA = new ArrayList<>();
-        for (Seat a : fieldLevel) {
-            if (a.getSection() == sec) {
-                secA.add(a);
+        if(A.equals("FL")){
+            for (Seat a : fieldLevel) {
+                if (a.getSection() == sec) {
+                    secA.add(a);
+                }
+            }
+        }
+        if(A.equals("ML")){
+            for (Seat a : mainLevel) {
+                if (a.getSection() == sec) {
+                    secA.add(a);
+                }
+            }
+        }
+        if(A.equals("GSL")){
+            for (Seat a : grandStandLevel) {
+                if (a.getSection() == sec) {
+                    secA.add(a);
+                }
             }
         }
         secA.sort(Comparator.comparingInt(Seat::getSeatNumber));
@@ -127,9 +152,25 @@ public class Stadium {
 
         for(int k = 0; k<NofS; k++){
             avl = false;
-            for(Seat a: secFL.get(sec)){
-                if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
-                    System.out.print("   ");
+            if(A.equals("FL")){
+                for(Seat a: secFL.get(sec)){
+                    if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
+                        System.out.print("   ");
+                    }
+                }
+            }
+            if(A.equals("ML")){
+                for(Seat a: secML.get(sec)){
+                    if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
+                        System.out.print("   ");
+                    }
+                }
+            }
+            if(A.equals("GSL")){
+                for(Seat a: secGSL.get(sec)){
+                    if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
+                        System.out.print("   ");
+                    }
                 }
             }
             for (int i = 0; i < secA.size(); i++) {
@@ -152,25 +193,61 @@ public class Stadium {
                 }
                 if (secA.get(i).getSeatNumber() % 25 == 0) {
                     System.out.print("\n");
-                    for(Seat a: secFL.get(sec)){
-                        if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
-                            System.out.print("   ");
+                    if(A.equals("FL")){
+                        for(Seat a: secFL.get(sec)){
+                            if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
+                                System.out.print("   ");
+                            }
+                        }
+                    }
+                    if(A.equals("ML")){
+                        for(Seat a: secML.get(sec)){
+                            if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
+                                System.out.print("   ");
+                            }
+                        }
+                    }
+                    if(A.equals("GSL")){
+                        for(Seat a: secGSL.get(sec)){
+                            if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
+                                System.out.print("   ");
+                            }
                         }
                     }
                 }
                 
             }
             try {
-                System.out.println("\n==== Choose Seat ====");
+                sPrint("\n==== Choose Seat ====");
 
-                System.out.println("\nSeat Number: ");
+                sPrint("\nSeat Number: ");
 
                 SN = SelectMenu.nextInt();
 
-                for (Seat a : fieldLevel) {
-                    if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                        if(!clientA.contains(a)){
-                            avl = true;
+                if(A.equals("FL")){
+                    for (Seat a : fieldLevel) {
+                        if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                            if(!clientA.contains(a)){
+                                avl = true;
+                            }
+                        }
+                    }
+                }
+                if(A.equals("ML")){
+                    for (Seat a : mainLevel) {
+                        if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                            if(!clientA.contains(a)){
+                                avl = true;
+                            }
+                        }
+                    }
+                }
+                if(A.equals("GSL")){
+                    for (Seat a : grandStandLevel) {
+                        if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                            if(!clientA.contains(a)){
+                                avl = true;
+                            }
                         }
                     }
                 }
@@ -183,61 +260,107 @@ public class Stadium {
                     k--;
                 }
                 if(avl){
-                    for (Seat a : fieldLevel) {
-                        if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                            clientA.add(a);
+                    if(A.equals("FL")){
+                        for (Seat a : fieldLevel) {
+                            if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                                clientA.add(a);
+                            }
                         }
+                    }
+                    if(A.equals("ML")){
+                        for (Seat a : mainLevel) {
+                            if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                                clientA.add(a);
+                            }
+                        } 
+                    }
+                    if(A.equals("GSL")){
+                        for (Seat a : grandStandLevel) {
+                            if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                                clientA.add(a);
+                            }
+                        } 
                     }
                 }
                 
             } catch (InputMismatchException e) {
-                System.out.println("Please input the correct information");
+                sPrint("Please input the correct information");
             }
         }
-        BuyFL(clientA, sec);
+        Buy(clientA, sec, A);
 
     }
 
-    public static void BuyFL(ArrayList<Seat> Seat, Character sec) {
+    public static void Buy(ArrayList<Seat> Seat, Character sec, String A) {
         Scanner BuyMenu = new Scanner(System.in);
 
         String conf = "";
         try {
-            System.out.println("==== Payment ====");
+            sPrint("==== Payment ====");
 
-            System.out.println("\nTotal Cost: $" + 300*Seat.size());
+            if(A.equals("FL")){
+                sPrint("\nTotal Cost: $" + 300*Seat.size());
+            }
+            if(A.equals("ML")){
+                sPrint("\nTotal Cost: $" + 120*Seat.size());
+            }
+            if(A.equals("GSL")){
+                sPrint("\nTotal Cost: $" + 45*Seat.size());
+            }
 
-            System.out.println("\nDo you wish to confirm your payment?");
+            sPrint("\nDo you wish to confirm your payment?");
 
-            System.out.println("\nYes or No (Y/N):");
+            sPrint("\nYes or No (Y/N):");
 
             conf = BuyMenu.nextLine();
 
         } catch (InputMismatchException e) {
-            System.out.println("Please input the correct information");
+            sPrint("Please input the correct information");
         }
 
         if (conf.toLowerCase().equals("y")) {
-            System.out.println("\nTransaction Completed.");
+            sPrint("\nTransaction Completed.");
 
-            System.out.println("\nReturrning Back...");
+            sPrint("\nReturrning Back...");
 
             for (Seat b : Seat) {
-                for(Seat a: fieldLevel){
-                    if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
-                        FLseats.put(client, a);
-                        fieldLevel.remove(a);
-                        secFL.get(sec).add(a);
-                        break;
+                if(A.equals("FL")){
+                    for(Seat a: fieldLevel){
+                        if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
+                            FLseats.put(client, a);
+                            fieldLevel.remove(a);
+                            secFL.get(sec).add(a);
+                            break;
+                        }
                     }
                 }
+                if(A.equals("ML")){
+                    for(Seat a: mainLevel){
+                        if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
+                            MLseats.put(client, a);
+                            mainLevel.remove(a);
+                            secML.get(sec).add(a);
+                            break;
+                        }
+                    } 
+                }
+                if(A.equals("GSL")){
+                    for(Seat a: grandStandLevel){
+                        if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
+                            GSLseats.put(client, a);
+                            grandStandLevel.remove(a);
+                            secGSL.get(sec).add(a);
+                            break;
+                        }
+                    } 
+                }
+                
             }
 
             waitTime(2000);
             return;
         }
-        System.out.println("\nReturrning Back...");
-
+        sPrint("\nReturrning Back...");
         waitTime(200);
     }
 
@@ -247,39 +370,68 @@ public class Stadium {
         String num = "";
         Scanner AddClientMenu = new Scanner(System.in);
         try {
-            System.out.println("==== Client Information ====");
+            sPrint("==== Client Information ====");
 
-            System.out.println("\nPlease enter the client's name: ");
+            sPrint("\nPlease enter the client's name: ");
             Cname = AddClientMenu.nextLine();
 
-            System.out.println("\nPlease enter the client's email: ");
+            sPrint("\nPlease enter the client's email: ");
             email = AddClientMenu.nextLine();
 
-            System.out.println("\nPlease enter the client's phone number: ");
+            sPrint("\nPlease enter the client's phone number: ");
             num = AddClientMenu.nextLine();
 
         } catch (InputMismatchException e) {
-            System.out.println("Please input the correct information");
+            sPrint("Please input the correct information");
         }
         // AddClientMenu.close();
         return new Client(Cname, email, num);
     }
 
-    public static void fieldLevelFun() {
+    public static void Reservation(String a) {
         boolean MENU = true;
         Scanner menu = new Scanner(System.in);
         while (MENU) {
-            System.out.println("\n===UPRM Baseball Stadium Seat Manager===");
-            System.out.println("\nPlease Select a Section: ");
-            System.out.println("1. Section A (Available Seats: " + (100 - secFL.get('A').size()) + ")"
-                    + "\n2. Section B (Available Seats: " + (100 - secFL.get('B').size()) + ")"
-                    + "\n3. Section C (Available Seats: " + (100 - secFL.get('C').size()) + ")"
-                    + "\n4. Section D (Available Seats: " + (100 - secFL.get('D').size()) + ")"
-                    + "\n5. Section E (Available Seats: " + (100 - secFL.get('E').size()) + ")"
-                    + "\n6. Return");
+            if(a.equals("FL")){
+                sPrint("\n===UPRM Baseball Stadium Seat Manager===");
+                sPrint("\nPlease Select a Section: ");
+                sPrint("1. Section A (Available Seats: " + (100 - secFL.get('A').size()) + ")"
+                        + "\n2. Section B (Available Seats: " + (100 - secFL.get('B').size()) + ")"
+                        + "\n3. Section C (Available Seats: " + (100 - secFL.get('C').size()) + ")"
+                        + "\n4. Section D (Available Seats: " + (100 - secFL.get('D').size()) + ")"
+                        + "\n5. Section E (Available Seats: " + (100 - secFL.get('E').size()) + ")"
+                        + "\n6. Return");
+            }if(a.equals("ML")){
+                sPrint("\n===UPRM Baseball Stadium Seat Manager===");
+                sPrint("\nPlease Select a Section: ");
+                sPrint("1. Section A (Available Seats: " + (100 - secML.get('A').size()) + ")"
+                        + "\n2. Section B (Available Seats: " + (100 - secML.get('B').size()) + ")"
+                        + "\n3. Section C (Available Seats: " + (100 - secML.get('C').size()) + ")"
+                        + "\n4. Section D (Available Seats: " + (100 - secML.get('D').size()) + ")"
+                        + "\n5. Section E (Available Seats: " + (100 - secML.get('E').size()) + ")"
+                        + "\n6. Section F (Available Seats: " + (100 - secML.get('F').size()) + ")"
+                        + "\n7. Section G (Available Seats: " + (100 - secML.get('G').size()) + ")"
+                        + "\n8. Section H (Available Seats: " + (100 - secML.get('H').size()) + ")"
+                        + "\n9. Section I (Available Seats: " + (100 - secML.get('I').size()) + ")"
+                        + "\n10. Section J (Available Seats: " + (100 - secML.get('J').size()) + ")"
+                        + "\n11. Return");
+            }
+            if(a.equals("GSL")){
+                sPrint("\n===UPRM Baseball Stadium Seat Manager===");
+                sPrint("\nPlease Select a Section: ");
+                sPrint("1. Section A (Available Seats: " + (250 - secGSL.get('A').size()) + ")"
+                        + "\n2. Section B (Available Seats: " + (250 - secGSL.get('B').size()) + ")"
+                        + "\n3. Section C (Available Seats: " + (260 - secGSL.get('C').size()) + ")"
+                        + "\n4. Section D (Available Seats: " + (250 - secGSL.get('D').size()) + ")"
+                        + "\n5. Section E (Available Seats: " + (250 - secGSL.get('E').size()) + ")"
+                        + "\n6. Section F (Available Seats: " + (250 - secGSL.get('F').size()) + ")"
+                        + "\n7. Section G (Available Seats: " + (250 - secGSL.get('G').size()) + ")"
+                        + "\n8. Section H (Available Seats: " + (250 - secGSL.get('H').size()) + ")"
+                        + "\n9. Return");
+            }
 
             try {
-                System.out.println("Enter Option Number: ");
+                sPrint("Enter Option Number: ");
                 int input = menu.nextInt();
                 int nSt;
                 switch (input) {
@@ -287,36 +439,67 @@ public class Stadium {
                         // Aqui method para add client
                         sPrint("\nHow many seats do you want? ");
                         nSt = menu.nextInt();
-                        Select('A',nSt);
+                        Select('A',nSt,a);
 
                         break;
                     case 2:
-                        sPrint("\nHow many seats do you want? ");
+                        sPrint("\nHow many seat,s do you want? ");
                         nSt = menu.nextInt();
-                        Select('B', nSt);
+                        Select('B', nSt,a);
                         break;
                     case 3:
                         sPrint("\nHow many seats do you want? ");
                         nSt = menu.nextInt();
-                        Select('C', nSt);
+                        Select('C', nSt,a);
                         break;
                     case 4:
                         sPrint("\nHow many seats do you want? ");
                         nSt = menu.nextInt();
-                        Select('D', nSt);
+                        Select('D', nSt,a);
                         break;
                     case 5:
                         sPrint("\nHow many seats do you want? ");
                         nSt = menu.nextInt();
-                        Select('E', nSt);
+                        Select('E', nSt,a);
                         break;
                     case 6:
+                        if(a.equals("ML")){
+                            sPrint("\nHow many seats do you want? ");
+                            nSt = menu.nextInt();
+                            Select('F', nSt,a);
+                            break;
+                        }
+                        return;
+                    case 7:
+                        sPrint("\nHow many seats do you want? ");
+                        nSt = menu.nextInt();
+                        Select('G', nSt,a);
+                        break;
+                    case 8:
+                        sPrint("\nHow many seats do you want? ");
+                        nSt = menu.nextInt();
+                        Select('H', nSt,a);
+                        break;
+                    case 9:
+                        if(a.equals("GSL")){
+                            return;
+                        }
+                        sPrint("\nHow many seats do you want? ");
+                        nSt = menu.nextInt();
+                        Select('I', nSt,a);
+                        break;
+                    case 10:
+                        sPrint("\nHow many seats do you want? ");
+                        nSt = menu.nextInt();
+                        Select('J', nSt,a);
+                        break;
+                    case 11:
                         return;
                     default:
                         continue;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Invalid Input");
+                sPrint("Invalid Input");
                 menu.nextLine();
             }
         }
@@ -327,26 +510,27 @@ public class Stadium {
         boolean MENU = true;
         Scanner menu = new Scanner(System.in);
         while (MENU) {
-            System.out.println("\n===UPRM Baseball Stadium Seat Manager===");
-            System.out.println("\nPlease Select a Seat Level: ");
-            System.out.println("1. Field Level" + " (Available Seats: " + fieldLevel.size() + ")"
+            sPrint("\n===UPRM Baseball Stadium Seat Manager===");
+            sPrint("\nPlease Select a Seat Level: ");
+            sPrint("1. Field Level" + " (Available Seats: " + fieldLevel.size() + ")"
                     + "\n2. Main Level" + " (Available Seats: " + mainLevel.size() + ")"
                     + "\n3. Grandstand Level" + " (Available Seats: " + grandStandLevel.size() + ")"
                     + "\n4. Return");
             //
             try {
-                System.out.println("Enter Option Number: ");
+                sPrint("Enter Option Number: ");
                 int input = menu.nextInt();
                 switch (input) {
                     case 1:
-                        fieldLevelFun();
+                        Reservation("FL");
                         // Aqui method para add client
                         break;
                     case 2:
 
+                        Reservation("ML");
                         break;
                     case 3:
-
+                        Reservation("GSL");
                         break;
                     case 4:
                         return;
@@ -354,7 +538,7 @@ public class Stadium {
                         continue;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Invalid Input");
+                sPrint("Invalid Input");
                 menu.nextLine();
             }
         }
@@ -410,36 +594,60 @@ public class Stadium {
             }
         }
     }
+    
     // public static void showWaitingList() { // TODO : showWaitingList
-    //     show = true;
-    //     Queue<Client> copy = new LinkedList<>(waitlist);
-    //     while(show){
-    //         Client Frank = new Client("Frank", "a", "b");
-    //         Client Tom = new Client("Tom", "a", "b");
-    //         Client John = new Client("John", "a", "b");
+    //     Queue<Client> copy = new LinkedList<>();
+    //     Scanner exit = new Scanner(System.in);
+    //     boolean show = true;
 
-    //         copy.add(Frank);
-    //         copy.add(Tom);
-    //         copy.add(John);
-            
+    //     Client Frank = new Client("Frank", "a", "b");
+    //     Client Tom = new Client("Tom", "a", "b");
+    //     Client John = new Client("John", "a", "b");
+
+    //     sPrint("Press [E] to Exit...");
+
+    //     copy.add(Frank);
+    //     copy.add(Tom);
+    //     copy.add(John);
+    //     while(show){            
     //         for (int i = 0; i < wl_Size; i++) {
-    //             clientPrint(copy.peek());
-    //             copy.remove();
+    //             clientPrint(copy.poll());
     //         }
-            
     //     }
-    //     show = false;
-    //     show ? 
+    //     exit.nextLine();
     // }
 
 
     // Hacemos algo tipo putty?
     public static void main(String[] args) {
+        
+        // Field Level
         secFL.put('A', FLA);
         secFL.put('B', FLB);
         secFL.put('C', FLC);
         secFL.put('D', FLD);
         secFL.put('E', FLE);
+
+        // Main Level
+        secML.put('A', MLA);
+        secML.put('B', MLB);
+        secML.put('C', MLC);
+        secML.put('D', MLD);
+        secML.put('E', MLE);
+        secML.put('F', MLF);
+        secML.put('G', MLG);
+        secML.put('H', MLH);
+        secML.put('I', MLI);
+        secML.put('J', MLJ);
+
+        secGSL.put('A', GSLA);
+        secGSL.put('B', GSLB);
+        secGSL.put('C', GSLC);
+        secGSL.put('D', GSLD);
+        secGSL.put('E', GSLE);
+        secGSL.put('F', GSLF);
+        secGSL.put('G', GSLG);
+        secGSL.put('H', GSLH);
 
         Scanner menu = new Scanner(System.in);
         boolean AddC = false;
@@ -448,9 +656,9 @@ public class Stadium {
         createSeats();
 
         while (MENU) {
-            System.out.println("===UPRM Baseball Stadium Seat Manager===");
-            System.out.println("\nPlease Select an Option: ");
-            System.out.println("1. Reserve Seat"
+            sPrint("===UPRM Baseball Stadium Seat Manager===");
+            sPrint("\nPlease Select an Option: ");
+            sPrint("1. Reserve Seat"
                     + "\n2. Cancel a Reservation"
                     + "\n3. Reservation History"
                     + "\n4. Undo Previous Reservation"
@@ -458,7 +666,7 @@ public class Stadium {
                     + "\n6. Close App");
 
             try {
-                System.out.println("Enter Option Number: ");
+                sPrint("Enter Option Number: ");
                 int input = menu.nextInt();
                 switch (input) {
                     case 1: // Reserve Seat Client
@@ -468,6 +676,7 @@ public class Stadium {
                         // Aqui method para add client
                         break;
                     case 2: // Cancel a Reservation
+                
                         break;
                     case 3: // Undo Previous Reservatioon
 
@@ -479,14 +688,15 @@ public class Stadium {
                         // showWaitingList();
                         break;
                     case 6:
-                        System.out.println("Closing Program...");
+                        sPrint("Closing Program...");
+                        menu.close();
                         return;
                     default:
                         continue;
 
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Invalid Input");
+                sPrint("Invalid Input");
                 menu.nextLine();
             }
         }
