@@ -755,7 +755,7 @@ public class Stadium {
                             break;  
                         }
                     case 6:
-                        if(a.equals("ML")){
+                        if(a.equals("ML") || a.equals("GSL")){
                             sPrint("\nHow many seats do you want? ");
                             sel = previewSeats('F', a);
                             if(sel == 0){
