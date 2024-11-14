@@ -121,7 +121,7 @@ public class Stadium {
         Scanner SelectMenu = new Scanner(System.in);
         boolean avl = false;
         int SN = 0; 
-        
+
         sPrint("Available Seats:");
 
         ArrayList<Seat> secA = new ArrayList<>();
@@ -300,6 +300,12 @@ public class Stadium {
 
         ArrayList<Seat> secA = new ArrayList<>();
         if(A.equals("FL")){
+            if(secFL.get(sec).size() == 100){
+                waitTime(2000);
+                sPrint("\nNo seats available.");
+                waitTime(2000);
+                return 3;
+            }
             for (Seat a : fieldLevel) {
                 if (a.getSection() == sec) {
                     secA.add(a);
@@ -307,6 +313,12 @@ public class Stadium {
             }
         }
         if(A.equals("ML")){
+            if(secML.get(sec).size() == 100){
+                waitTime(2000);
+                sPrint("\nNo seats available.");
+                waitTime(2000);
+                return 3;
+            }
             for (Seat a : mainLevel) {
                 if (a.getSection() == sec) {
                     secA.add(a);
@@ -314,6 +326,12 @@ public class Stadium {
             }
         }
         if(A.equals("GSL")){
+            if(secGSL.get(sec).size() == 250){
+                waitTime(2000);
+                sPrint("\nNo seats available.");
+                waitTime(2000);
+                return 3;
+            }
             for (Seat a : grandStandLevel) {
                 if (a.getSection() == sec) {
                     secA.add(a);
