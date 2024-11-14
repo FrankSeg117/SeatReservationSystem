@@ -668,7 +668,7 @@ public class Stadium {
                 sPrint("\nPlease Select a Section: ");
                 sPrint("1. Section A (Available Seats: " + (250 - secGSL.get('A').size()) + ")"
                         + "\n2. Section B (Available Seats: " + (250 - secGSL.get('B').size()) + ")"
-                        + "\n3. Section C (Available Seats: " + (260 - secGSL.get('C').size()) + ")"
+                        + "\n3. Section C (Available Seats: " + (250 - secGSL.get('C').size()) + ")"
                         + "\n4. Section D (Available Seats: " + (250 - secGSL.get('D').size()) + ")"
                         + "\n5. Section E (Available Seats: " + (250 - secGSL.get('E').size()) + ")"
                         + "\n6. Section F (Available Seats: " + (250 - secGSL.get('F').size()) + ")"
