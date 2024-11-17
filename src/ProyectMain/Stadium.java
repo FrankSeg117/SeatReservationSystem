@@ -50,7 +50,7 @@ public class Stadium {
      * Linked Lists
      */
 
-    public LinkedList<Transaction> Tregister = new LinkedList<>(); // placeholder, may need to create a class for transactions
+    public static LinkedList<Transaction> transRegister = new LinkedList<>(); // placeholder, may need to create a class for transactions
 
     /*
      * Hash Maps
@@ -116,7 +116,7 @@ public class Stadium {
     //     }
     // }
 
-    public static void Select(Character sec, int NofS, String A) {
+    public static void Select(Character sec, int NofS, String A) {  //QUE RAYOS ES NOFS BROOOOOO TODO EXPLAINT WHAT IS THIS
         Scanner SelectMenu = new Scanner(System.in);
         boolean avl = false;
         int SN = 0; 
@@ -309,8 +309,22 @@ public class Stadium {
                 sPrint("Please input the correct information");
             }
         }
+        
+        int price = 0;
+        if(A.equals("FL")){
+            price = 300*clientA.size();
+        }
+        if(A.equals("ML")){
+            price = 120*clientA.size();
+        }
+        if(A.equals("GSL")){
+            price = 45*clientA.size();
+        }
+        //Implementation for reservations in transaction history TODO FIX ERROR OF 100 TRANSACTIONS
+        transRegister.add(new Transaction(clientA.size(), client, clientA, price, "Reservation")); 
         Buy(clientA, sec, A);
-
+    
+    
     }
 
     public static int previewSeats(Character sec, String A) {
@@ -465,19 +479,22 @@ public class Stadium {
 
     public static void Buy(ArrayList<Seat> Seat, Character sec, String A) {
         Scanner BuyMenu = new Scanner(System.in);
-
+        int price = 0;
         String conf = "";
         try {
             sPrint("==== Payment ====");
 
             if(A.equals("FL")){
-                sPrint("\nTotal Cost: $" + 300*Seat.size());
+                price = 300*Seat.size();
+                sPrint("\nTotal Cost: $" + price);
             }
             if(A.equals("ML")){
-                sPrint("\nTotal Cost: $" + 120*Seat.size());
+                price = 120*Seat.size();
+                sPrint("\nTotal Cost: $" + price);
             }
             if(A.equals("GSL")){
-                sPrint("\nTotal Cost: $" + 45*Seat.size());
+                price = 45*Seat.size();
+                sPrint("\nTotal Cost: $" + price);
             }
 
             sPrint("\nDo you wish to confirm your payment?");
@@ -526,7 +543,10 @@ public class Stadium {
                         }
                     } 
                 }
-                
+
+
+
+
             }
 
             waitTime(2000);
@@ -540,7 +560,7 @@ public class Stadium {
         boolean avl = false;
         int SN = 0; 
         
-        int NofS = 0;
+        int NofS = 0; //NECESITO SABER Q ES ESTO
 
         ArrayList<Seat> secA = new ArrayList<>();
         if(A.equals("FL")){
@@ -629,6 +649,23 @@ public class Stadium {
                     continue;
                 }
         }
+
+
+        
+        int price = 0;
+        if(A.equals("FL")){
+            price = 300*clientA.size();
+        }
+        if(A.equals("ML")){
+            price = 120*clientA.size();
+        }
+        if(A.equals("GSL")){
+            price = 45*clientA.size();
+        }
+        //Implementation for reservations in transaction history TODO FIX ERROR OF 100 TRANSACTIONS
+        transRegister.add(new Transaction(clientA.size(), client, clientA, price, "Reservation")); 
+
+
         Buy(clientA, sec, A);
 
     }
@@ -1059,10 +1096,10 @@ public class Stadium {
                     case 2: // Cancel a Reservation
                 
                         break;
-                    case 3: // Undo Previous Reservatioon
-
+                    case 3: // Show Reservation History
+                        Transaction.printTransactionLinkedList(transRegister, menu);
                         break;
-                    case 4: // Undo PreviousReservation
+                    case 4: // Undo Previous Reservation
 
                         break;
                     case 5: // Wait
