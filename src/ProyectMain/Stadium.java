@@ -51,7 +51,7 @@ public class Stadium {
      * Linked Lists
      */
 
-    public LinkedList<Transaction> Tregister = new LinkedList<>(); // placeholder, may need to create a class for transactions
+    public static LinkedList<Transaction> Transregister = new LinkedList<>(); // placeholder, may need to create a class for transactions
 
     /*
      * Hash Maps
@@ -504,7 +504,15 @@ public class Stadium {
                         }
                     } 
                 }
-                
+                //AQUI PUEDO IMPLEMENTAR LA LINKED LIST PARA HISTORIAL TODO : showWaitingList
+                Transregister.add(null);
+
+
+
+
+
+
+
             }
 
             waitTime(2000);
@@ -518,7 +526,7 @@ public class Stadium {
         boolean avl = false;
         int SN = 0; 
         
-        int NofS = 0;
+        int NofS = 0; //NECESITO SABER Q ES ESTO
 
         ArrayList<Seat> secA = new ArrayList<>();
         if(A.equals("FL")){
