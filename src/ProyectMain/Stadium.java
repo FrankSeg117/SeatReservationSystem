@@ -1,16 +1,15 @@
 package ProyectMain;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.InputMismatchException;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
-import java.util.InputMismatchException;
-import java.lang.Thread;
+import java.util.Set;
+import java.util.Stack;
 
 public class Stadium {
     /*
@@ -437,7 +436,7 @@ public class Stadium {
         while (OPTION) {
             sPrint("\nPlease select an option: ");
             sPrint("1. Select Seats"
-                    + "\n2. Buy Remainng Seats"
+                    + "\n2. Buy Remaining Seats"
                     + "\n3. Return");
             //
             try {
