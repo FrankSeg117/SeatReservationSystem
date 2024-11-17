@@ -57,9 +57,9 @@ public class Stadium {
      * Hash Maps
      */
 
-    public static HashMap<Client, Seat> FLseats = new HashMap<>(); // Structure to store Client in field level seats
-    public static HashMap<Client, Seat> MLseats = new HashMap<>(); // Structure to store Client in main level seats
-    public static HashMap<Client, Seat> GSLseats = new HashMap<>(); // Structure to store Client in Grand Stand level seats
+    public static HashMap<Client, ArrayList<Seat>> FLseats = new HashMap<>(); // Structure to store Client in field level seats
+    public static HashMap<Client, ArrayList<Seat>> MLseats = new HashMap<>(); // Structure to store Client in main level seats
+    public static HashMap<Client, ArrayList<Seat>> GSLseats = new HashMap<>(); // Structure to store Client in Grand Stand level seats
     public HashMap<Client, Seat> GSseats = new HashMap<>(); // Structure to store Client in grandstand level seats
     public static HashMap<Character, Set<Seat>> secFL = new HashMap<>();
     public static HashMap<Character, Set<Seat>> secML = new HashMap<>();
@@ -105,17 +105,17 @@ public class Stadium {
         }
     }
 
-    public void AssignClientTOSeat(Client client, char section, String level) {
-        if (level.equals("FIELD")) {
-            Seat s = null;
-            for (Seat seat : fieldLevel) {
-                if (seat.getSection() == section /* and is not taken */) {
+    // public void AssignClientTOSeat(Client client, char section, String level) {
+    //     if (level.equals("FIELD")) {
+    //         Seat s = null;
+    //         for (Seat seat : fieldLevel) {
+    //             if (seat.getSection() == section /* and is not taken */) {
 
-                }
-            }
-            FLseats.put(client, s);
-        }
-    }
+    //             }
+    //         }
+    //         FLseats.put(client, s);
+    //     }
+    // }
 
     public static void Select(Character sec, int NofS, String A) {
         Scanner SelectMenu = new Scanner(System.in);
@@ -149,6 +149,29 @@ public class Stadium {
         secA.sort(Comparator.comparingInt(Seat::getSeatNumber));
         
         ArrayList<Seat> clientA = new ArrayList<>();
+
+        if(!FLseats.isEmpty()){
+            for(Client a: FLseats.keySet()){
+                if(client.equals(a)){
+                    clientA = FLseats.get(a);
+                    waitTime(2000);
+                }
+            }
+        }if(!MLseats.isEmpty()){
+            for(Client a: MLseats.keySet()){
+                if(client.equals(a)){
+                    clientA = MLseats.get(a);
+                    waitTime(2000);
+                }
+            }
+        }if(!GSLseats.isEmpty()){
+            for(Client a: GSLseats.keySet()){
+                if(client.equals(a)){
+                    clientA = GSLseats.get(a);
+                    waitTime(2000);
+                }
+            }
+        }
 
         for(int k = 0; k<NofS; k++){
             avl = false;
@@ -477,7 +500,7 @@ public class Stadium {
                 if(A.equals("FL")){
                     for(Seat a: fieldLevel){
                         if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
-                            FLseats.put(client, a);
+                            FLseats.put(client, Seat);
                             fieldLevel.remove(a);
                             secFL.get(sec).add(a);
                             break;
@@ -487,7 +510,7 @@ public class Stadium {
                 if(A.equals("ML")){
                     for(Seat a: mainLevel){
                         if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
-                            MLseats.put(client, a);
+                            MLseats.put(client, Seat);
                             mainLevel.remove(a);
                             secML.get(sec).add(a);
                             break;
@@ -497,7 +520,7 @@ public class Stadium {
                 if(A.equals("GSL")){
                     for(Seat a: grandStandLevel){
                         if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
-                            GSLseats.put(client, a);
+                            GSLseats.put(client, Seat);
                             grandStandLevel.remove(a);
                             secGSL.get(sec).add(a);
                             break;
@@ -631,7 +654,31 @@ public class Stadium {
         } catch (InputMismatchException e) {
             sPrint("Please input the correct information");
         }
-        // AddClientMenu.close();
+        if(!FLseats.isEmpty()){
+            for(Client a: FLseats.keySet()){
+                if(email.equals(a.getEmail())){
+                    sPrint("\nClient is already on the system.");
+                    return a;
+                }
+                waitTime(2000);
+            }
+        }if(!MLseats.isEmpty()){
+            for(Client a: MLseats.keySet()){
+                if(email.equals(a.getEmail())){
+                    sPrint("\nClient is already on the system.");
+                    return a;
+                }
+                waitTime(2000);
+            }
+        }if(!GSLseats.isEmpty()){
+            for(Client a: GSLseats.keySet()){
+                if(email.equals(a.getEmail())){
+                    sPrint("\nClient is already on the system.");
+                    return a;
+                }
+                waitTime(2000);
+            }
+        }
         return new Client(Cname, email, num);
     }
 

@@ -14,6 +14,10 @@ public class Client {
     public String getName(){
         return name;
     }
+
+    public String getEmail(){
+        return email;
+    }
 // hola frank salu2 tomas turbado
 // huh?
 }
