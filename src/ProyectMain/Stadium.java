@@ -120,6 +120,7 @@ public class Stadium {
         Scanner SelectMenu = new Scanner(System.in);
         boolean avl = false;
         int SN = 0; 
+        int n = 0;
 
         sPrint("Available Seats:");
 
@@ -309,7 +310,7 @@ public class Stadium {
                 sPrint("Please input the correct information");
             }
         }
-        Buy(clientA, sec, A);
+        Buy(clientA, sec, A, NofS);
 
     }
 
@@ -463,7 +464,7 @@ public class Stadium {
         
     }
 
-    public static void Buy(ArrayList<Seat> Seat, Character sec, String A) {
+    public static void Buy(ArrayList<Seat> Seat, Character sec, String A, int NofS) {
         Scanner BuyMenu = new Scanner(System.in);
 
         String conf = "";
@@ -471,13 +472,13 @@ public class Stadium {
             sPrint("==== Payment ====");
 
             if(A.equals("FL")){
-                sPrint("\nTotal Cost: $" + 300*Seat.size());
+                sPrint("\nTotal Cost: $" + 300*NofS);
             }
             if(A.equals("ML")){
-                sPrint("\nTotal Cost: $" + 120*Seat.size());
+                sPrint("\nTotal Cost: $" + 120*NofS);
             }
             if(A.equals("GSL")){
-                sPrint("\nTotal Cost: $" + 45*Seat.size());
+                sPrint("\nTotal Cost: $" + 45*NofS);
             }
 
             sPrint("\nDo you wish to confirm your payment?");
@@ -542,6 +543,8 @@ public class Stadium {
         
         int NofS = 0;
 
+        
+
         ArrayList<Seat> secA = new ArrayList<>();
         if(A.equals("FL")){
             NofS = fieldLevel.size();
@@ -570,6 +573,29 @@ public class Stadium {
         secA.sort(Comparator.comparingInt(Seat::getSeatNumber));
 
         ArrayList<Seat> clientA = new ArrayList<>();
+
+        if(!FLseats.isEmpty()){
+            for(Client a: FLseats.keySet()){
+                if(client.equals(a)){
+                    clientA = FLseats.get(a);
+                    waitTime(2000);
+                }
+            }
+        }if(!MLseats.isEmpty()){
+            for(Client a: MLseats.keySet()){
+                if(client.equals(a)){
+                    clientA = MLseats.get(a);
+                    waitTime(2000);
+                }
+            }
+        }if(!GSLseats.isEmpty()){
+            for(Client a: GSLseats.keySet()){
+                if(client.equals(a)){
+                    clientA = GSLseats.get(a);
+                    waitTime(2000);
+                }
+            }
+        }
 
         for(int k = 0; k<secA.size(); k++){
             avl = false;
@@ -606,6 +632,7 @@ public class Stadium {
                     if(A.equals("FL")){
                         for (Seat a : fieldLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                                
                                 clientA.add(a);
                             }
                         }
@@ -613,6 +640,7 @@ public class Stadium {
                     if(A.equals("ML")){
                         for (Seat a : mainLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                              
                                 clientA.add(a);
                             }
                         } 
@@ -620,6 +648,7 @@ public class Stadium {
                     if(A.equals("GSL")){
                         for (Seat a : grandStandLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                               
                                 clientA.add(a);
                             }
                         } 
@@ -629,7 +658,7 @@ public class Stadium {
                     continue;
                 }
         }
-        Buy(clientA, sec, A);
+        Buy(clientA, sec, A, secA.size());
 
     }
 
