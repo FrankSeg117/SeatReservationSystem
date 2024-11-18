@@ -50,7 +50,7 @@ public class Stadium {
      * Linked Lists
      */
 
-    public static LinkedList<Transaction> transRegister = new LinkedList<>(); // placeholder, may need to create a class for transactions
+    public static LinkedList<Transaction> transactionRegister = new LinkedList<>(); // placeholder, may need to create a class for transactions
 
     /*
      * Hash Maps
@@ -89,6 +89,8 @@ public class Stadium {
     public static boolean buy = false;
 
     public static Client client;
+
+    public Scanner scanner = new Scanner(System.in);
 
     public static void sPrint(String a) {System.out.println(a);} // Method to print faster like Python
     public static void clientPrint(Client c) {System.out.println(c.toString());}
@@ -148,7 +150,8 @@ public class Stadium {
         }
         secA.sort(Comparator.comparingInt(Seat::getSeatNumber));
         
-        ArrayList<Seat> clientA = new ArrayList<>();
+        ArrayList<Seat> clientA = new ArrayList<>(); //Sillas que estaban en el cliente anteriormente (Si es que existia anteriormente)
+        ArrayList<Seat> newSeats = new ArrayList<>(); //Sillas que se añaden nuevas al cliente sin contar las anteriores (Esto nos sirve para registrar las transacciones de forma precisa)
 
         if(!FLseats.isEmpty()){
             for(Client a: FLseats.keySet()){
@@ -287,6 +290,7 @@ public class Stadium {
                         for (Seat a : fieldLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
                                 clientA.add(a);
+                                newSeats.add(a);
                             }
                         }
                     }
@@ -294,6 +298,7 @@ public class Stadium {
                         for (Seat a : mainLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
                                 clientA.add(a);
+                                newSeats.add(a);
                             }
                         } 
                     }
@@ -301,6 +306,7 @@ public class Stadium {
                         for (Seat a : grandStandLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
                                 clientA.add(a);
+                                newSeats.add(a);
                             }
                         } 
                     }
@@ -310,22 +316,8 @@ public class Stadium {
                 sPrint("Please input the correct information");
             }
         }
-        
-        int price = 0;
-        if(A.equals("FL")){
-            price = 300*clientA.size();
-        }
-        if(A.equals("ML")){
-            price = 120*clientA.size();
-        }
-        if(A.equals("GSL")){
-            price = 45*clientA.size();
-        }
-        //Implementation for reservations in transaction history TODO FIX ERROR OF 100 TRANSACTIONS
-        transRegister.add(new Transaction(clientA.size(), client, clientA, price, "Reservation")); 
     
-    
-        Buy(clientA, sec, A, NofS);
+        Buy(clientA, sec, A, newSeats);
 
     }
 
@@ -479,7 +471,7 @@ public class Stadium {
         
     }
 
-    public static void Buy(ArrayList<Seat> Seat, Character sec, String A, int NofS) {
+    public static void Buy(ArrayList<Seat> Seat, Character sec, String A, ArrayList<Seat> newSeats) {
         Scanner BuyMenu = new Scanner(System.in);
         int price = 0;
         String conf = "";
@@ -487,13 +479,16 @@ public class Stadium {
             sPrint("==== Payment ====");
 
             if(A.equals("FL")){
-                sPrint("\nTotal Cost: $" + 300*NofS);
+                price = 300*newSeats.size();
+                sPrint("\nTotal Cost: $" + price);
             }
             if(A.equals("ML")){
-                sPrint("\nTotal Cost: $" + 120*NofS);
+                price = 120*newSeats.size();
+                sPrint("\nTotal Cost: $" + price);
             }
             if(A.equals("GSL")){
-                sPrint("\nTotal Cost: $" + 45*NofS);
+                price = 45*newSeats.size();
+                sPrint("\nTotal Cost: $" + price);
             }
 
             sPrint("\nDo you wish to confirm your payment?");
@@ -507,10 +502,14 @@ public class Stadium {
         }
 
         if (conf.toLowerCase().equals("y")) {
+            //Implementation for reservations in transaction history
+            transactionRegister.add(new Transaction(client, newSeats, price, "Reservation")); 
+
             sPrint("\nTransaction Completed.");
 
             sPrint("\nReturrning Back...");
-
+    
+            
             for (Seat b : Seat) {
                 if(A.equals("FL")){
                     for(Seat a: fieldLevel){
@@ -558,7 +557,7 @@ public class Stadium {
     public static void BuyAll(Character sec, String A) {
         boolean avl = false;
         int SN = 0; 
-        
+        ArrayList<Seat> newSeats = new ArrayList<>();
         int NofS = 0; //NECESITO SABER Q ES ESTO
 
         ArrayList<Seat> secA = new ArrayList<>();
@@ -648,24 +647,24 @@ public class Stadium {
                     if(A.equals("FL")){
                         for (Seat a : fieldLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                                
                                 clientA.add(a);
+                                newSeats.add(a);
                             }
                         }
                     }
                     if(A.equals("ML")){
                         for (Seat a : mainLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                              
                                 clientA.add(a);
+                                newSeats.add(a);
                             }
                         } 
                     }
                     if(A.equals("GSL")){
                         for (Seat a : grandStandLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                               
                                 clientA.add(a);
+                                newSeats.add(a);
                             }
                         } 
                     }
@@ -687,11 +686,9 @@ public class Stadium {
         if(A.equals("GSL")){
             price = 45*clientA.size();
         }
-        //Implementation for reservations in transaction history TODO FIX ERROR OF 100 TRANSACTIONS
-        transRegister.add(new Transaction(clientA.size(), client, clientA, price, "Reservation")); 
 
 
-        Buy(clientA, sec, A, secA.size());
+        Buy(clientA, sec, A, newSeats);
 
     }
 
@@ -1122,7 +1119,7 @@ public class Stadium {
                 
                         break;
                     case 3: // Show Reservation History
-                        Transaction.printTransactionLinkedList(transRegister, menu);
+                        Transaction.printTransactionLinkedList(transactionRegister, menu);
                         break;
                     case 4: // Undo Previous Reservation
 
