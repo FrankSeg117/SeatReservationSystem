@@ -97,7 +97,7 @@ public class Transaction {
         seatsInfo.append("Section " + rseats.get(0).getSection() + ": ");
 
         for (Seat seat : rseats) {
-            seatsInfo.append("Seat ").append(seat.getSeatNumber()).append(", ");
+            seatsInfo.append(seat.getSeatNumber()).append(", ");
         }
         
         return  "\n - Client Name: " + client.getName() +
