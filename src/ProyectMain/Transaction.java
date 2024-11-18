@@ -19,7 +19,7 @@ public class Transaction {
         this.rseats = reservedSeats;
         this.money = money;
         this.transactionType = transactionType;
-        this.level = "Main Level";
+        this.level = "MainLevel";
     }
 
     public Transaction(Client client, ArrayList<Seat> reservedSeats, int money, String transactionType, String level) {
@@ -115,7 +115,7 @@ public class Transaction {
     @Override
     public String toString() {
         StringBuilder seatsInfo = new StringBuilder();
-        seatsInfo.append("" + "Section " + rseats.get(0).getSection() + ": ");
+        seatsInfo.append(this.getLevel() + "/Section " + rseats.get(0).getSection() + ": ");
 
         for (Seat seat : rseats) {
             seatsInfo.append(seat.getSeatNumber()).append(", ");
