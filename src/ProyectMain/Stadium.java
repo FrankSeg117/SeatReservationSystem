@@ -243,77 +243,76 @@ public class Stadium {
                 }
                 
             }
+            
+            sPrint("\n==== Choose Seat ====");
+
+            sPrint("\nSeat Number: ");
             try {
-                sPrint("\n==== Choose Seat ====");
-
-                sPrint("\nSeat Number: ");
-
                 SN = SelectMenu.nextInt();
+            } catch (InputMismatchException e) {
+                SelectMenu.nextLine();
+                sPrint("Please input the correct information");
+            }
+            if(A.equals("FL")){
+                for (Seat a : fieldLevel) {
+                    if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                        if(!clientA.contains(a)){
+                            avl = true;
+                        }
+                    }
+                }
+            }
+            if(A.equals("ML")){
+                for (Seat a : mainLevel) {
+                    if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                        if(!clientA.contains(a)){
+                            avl = true;
+                        }
+                    }
+                }
+            }
+            if(A.equals("GSL")){
+                for (Seat a : grandStandLevel) {
+                    if (a.getSection() == sec && a.getSeatNumber() == SN) {
+                        if(!clientA.contains(a)){
+                            avl = true;
+                        }
+                    }
+                }
+            }
 
+            if(!avl){
+                sPrint("\nSeat is not available.");
+                sPrint("\nTry again.");
+                waitTime(2000);
+
+                k--;
+            }
+            if(avl){
                 if(A.equals("FL")){
                     for (Seat a : fieldLevel) {
                         if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                            if(!clientA.contains(a)){
-                                avl = true;
-                            }
+                            clientA.add(a);
+                            newSeats.add(a);
                         }
                     }
                 }
                 if(A.equals("ML")){
                     for (Seat a : mainLevel) {
                         if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                            if(!clientA.contains(a)){
-                                avl = true;
-                            }
+                            clientA.add(a);
+                            newSeats.add(a);
                         }
-                    }
+                    } 
                 }
                 if(A.equals("GSL")){
                     for (Seat a : grandStandLevel) {
                         if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                            if(!clientA.contains(a)){
-                                avl = true;
-                            }
+                            clientA.add(a);
+                            newSeats.add(a);
                         }
-                    }
+                    } 
                 }
-
-                if(!avl){
-                    sPrint("\nSeat is not available.");
-                    sPrint("\nTry again.");
-                    waitTime(2000);
-
-                    k--;
-                }
-                if(avl){
-                    if(A.equals("FL")){
-                        for (Seat a : fieldLevel) {
-                            if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                                clientA.add(a);
-                                newSeats.add(a);
-                            }
-                        }
-                    }
-                    if(A.equals("ML")){
-                        for (Seat a : mainLevel) {
-                            if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                                clientA.add(a);
-                                newSeats.add(a);
-                            }
-                        } 
-                    }
-                    if(A.equals("GSL")){
-                        for (Seat a : grandStandLevel) {
-                            if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                                clientA.add(a);
-                                newSeats.add(a);
-                            }
-                        } 
-                    }
-                }
-                
-            } catch (InputMismatchException e) {
-                sPrint("Please input the correct information");
             }
         }
     

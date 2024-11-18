@@ -19,6 +19,16 @@ public class Transaction {
         this.rseats = reservedSeats;
         this.money = money;
         this.transactionType = transactionType;
+        this.level = "Main Level";
+    }
+
+    public Transaction(Client client, ArrayList<Seat> reservedSeats, int money, String transactionType, String level) {
+        this.seatAmount = reservedSeats.size();
+        this.client = client;
+        this.rseats = reservedSeats;
+        this.money = money;
+        this.transactionType = transactionType;
+        this.level = level;
     }
 
     // Getters
@@ -40,6 +50,10 @@ public class Transaction {
 
     public String getTransactionType() {
         return transactionType;
+    }
+
+    public String getLevel(){
+        return level;
     }
 
     // Setters
@@ -81,7 +95,7 @@ public class Transaction {
             return;
         }
         for (int i = 0; i < list.size(); i++) {
-            System.out.println("\nTransaction Number: " + (i+1) + " {");
+            System.out.println("\nTransaction Number: " + (i + 1) + " {");
             System.out.println(list.get(i).toString());
         }
         while (!exit) {
@@ -101,13 +115,13 @@ public class Transaction {
     @Override
     public String toString() {
         StringBuilder seatsInfo = new StringBuilder();
-        seatsInfo.append("Section " + rseats.get(0).getSection() + ": ");
+        seatsInfo.append("" + "Section " + rseats.get(0).getSection() + ": ");
 
         for (Seat seat : rseats) {
             seatsInfo.append(seat.getSeatNumber()).append(", ");
         }
 
-        return  "\n - Client ID: " + client.getEmail() +
+        return "\n - Client ID: " + client.getEmail() +
                 "\n - Amount of Seats: " + seatAmount +
                 "\n - ID Number of Individual Seats Bought: \n[ " + seatsInfo.toString().trim() + " ]" +
                 "\n - Transaction Cost: $" + money +
