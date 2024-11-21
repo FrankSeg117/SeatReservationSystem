@@ -18,6 +18,9 @@ public class Client {
     public String getEmail(){
         return email;
     }
-// hola frank salu2 tomas turbado
-// huh?
+
+    public String getPhone(){
+        return phonenum;
+    }
+
 }

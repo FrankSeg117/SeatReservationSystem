@@ -76,22 +76,22 @@ public class Stadium {
      * Queues
      */
 
-    public static Queue<Client> waitlist = new LinkedList<>();
-    // Here we store the waitlist of clients that want a certein
-    // level
+    public static Queue<Client> mainWaitList = new LinkedList<>();
+    public static Queue<Client> fieldWaitList = new LinkedList<>();
+    public static Queue<Client> grandWaitList = new LinkedList<>();
 
     /*
      * Variables
      */
-
-    public static int wl_Size = waitlist.size();
 
     public static boolean buy = false;
 
     public static Client client;
 
     public static void sPrint(String a) {System.out.println(a);} // Method to print faster like Python
-    public static void clientPrint(Client c) {System.out.println(c.toString());}
+    public static void clientPrint(Client c) {
+        System.out.println("Client: " + c.getName() + ", Email: " + c.getEmail() + ", PhoneNum: " + c.getPhone());
+    }
 
     public static void waitTime(int ms){
         // Esto es parte de java para crear una breve pausa en pantalla para que se
@@ -638,6 +638,7 @@ public class Stadium {
         String email = "";
         String num = "";
         Scanner AddClientMenu = new Scanner(System.in);
+        
         try {
             sPrint("==== Client Information ====");
 
@@ -649,6 +650,7 @@ public class Stadium {
 
             sPrint("\nPlease enter the client's phone number: ");
             num = AddClientMenu.nextLine();
+
 
         } catch (InputMismatchException e) {
             sPrint("Please input the correct information");
@@ -975,32 +977,182 @@ public class Stadium {
             }
         }
     }
+
+    public static void WaitList(){
+        Scanner sc = new Scanner(System.in);
+
+        sPrint("\\*Waiting list menu*\\\n");
+        sPrint("Please select an option:"
+        + "\n1. Show Waiting List"
+        + "\n2. Quit Waiting List"
+        + "\n3. Exit");
+
+        try{
+            sPrint("Enter Option Number: ");
+            int option = sc.nextInt();
+
+            switch (option){
+                case 1:
+                    showWaitingList();
+                    break;
+                case 2:
+                    WLDequeHelper();
+                    break;
+                case 3:
+                    return;
+            }
+
+        } catch(InputMismatchException e){
+            sPrint("Invalid input");
+            sc.nextLine();
+        }
+    }
     
-    // public static void showWaitingList() { // TODO : showWaitingList
-    //     Queue<Client> copy = new LinkedList<>();
-    //     Scanner exit = new Scanner(System.in);
-    //     boolean show = true;
+    public static void showWaitingList() {
+        Scanner sc = new Scanner(System.in);
+        sPrint("\\*Select Waiting list to display*\\\n");
+        sPrint("Please select an option:"
+        + "\n1. Main level Waiting List"
+        + "\n2. Field level Waiting List"
+        + "\n3. Grand Stand level Waiting List"
+        + "\n4. Exit");
 
-    //     Client Frank = new Client("Frank", "a", "b");
-    //     Client Tom = new Client("Tom", "a", "b");
-    //     Client John = new Client("John", "a", "b");
+        try{
+            sPrint("Enter Option Number: ");
+            int option = sc.nextInt();
 
-    //     sPrint("Press [E] to Exit...");
+            switch (option){
+                case 1:
+                    sPrint("\n\\*Showing: Main Level WL*\\");
+                    int i = 1;
+                    for(Client c : mainWaitList){
+                        System.out.println("Position " + i + " -> " + c.getName());
+                        i++;
+                    }
+                    sPrint("");
+                    waitTime(5000);
+                    break;
+                    case 2:
+                    sPrint("\n\\*Showing: Field Level WL*\\");
+                    int j = 1;
+                    for(Client c : fieldWaitList){
+                        System.out.println("Position " + j + " -> " + c.getName());
+                        j++;
+                    }
+                    sPrint("");
+                    waitTime(5000);
+                    break;
+                    case 3:
+                    sPrint("\n\\*Showing: Grand Stand Level WL*\\");
+                    int k = 1;
+                    for(Client c : grandWaitList){
+                        System.out.println("Position " + k + " -> " + c.getName());
+                        k++;
+                    }
+                    sPrint("");
+                    waitTime(5000);
+                    break;
+                case 4:
+                    return;
+            }
 
-    //     copy.add(Frank);
-    //     copy.add(Tom);
-    //     copy.add(John);
-    //     while(show){            
-    //         for (int i = 0; i < wl_Size; i++) {
-    //             clientPrint(copy.poll());
-    //         }
-    //     }
-    //     exit.nextLine();
-    // }
+        } catch(InputMismatchException e){
+            sPrint("Invalid input");
+            sc.nextLine();
+        }
+    }
 
+    public static void WLDequeHelper(){
+        Scanner sc = new Scanner(System.in);
+
+        sPrint("\nSelect WL to deque from");
+        sPrint("1. Main Level WL"
+        + "\n 2. Field level WL"
+        + "\n 3. Grand stand level WL"
+        + "\n 4. Cancel");
+        
+        try{
+            sPrint("Enter Option Number: ");
+            int option = sc.nextInt();
+
+            switch (option){
+                case 1:
+                    WaitingListDeque(client, mainWaitList);
+                    break;
+                case 2:
+                    WaitingListDeque(client, fieldWaitList);
+                    break;
+                case 3:
+                    WaitingListDeque(client, grandWaitList);
+                    break;
+                case 4:
+                    return;
+            }
+
+        } catch(InputMismatchException e){
+            sPrint("Invalid input");
+            sc.nextLine();
+        }
+    }
+
+    public static void WaitingListDeque(Client c, Queue<Client> levelWL){
+        Queue<Client> temp = new LinkedList<>();
+
+        while(!levelWL.isEmpty()){ // This traverses the queue to delete indicated client
+            if(!levelWL.peek().equals(c)){
+                temp.add(levelWL.poll());
+            } else {
+                levelWL.poll();
+            }
+        }
+
+        sPrint("Client deleted from Waiting List succesfully");
+        waitTime(3000);
+
+        while(!temp.isEmpty()){ // This makes the original queue return to its original state
+            levelWL.add(temp.poll());
+        }
+    }
+
+    public static void mainWaitListAdd(Client c){
+        mainWaitList.add(c);
+    }
+
+    public static void fieldWaitListAdd(Client c){
+        fieldWaitList.add(c);
+    }
+
+    public static void grandWaitListAdd(Client c){
+        grandWaitList.add(c);
+    }
+
+    public static void printQueue(Queue<Client> queue) {
+        for (Client c : queue) {
+            System.out.println(c.getName());
+        }
+    }
 
     // Hacemos algo tipo putty?
     public static void main(String[] args) {
+
+        // Test WL stuff
+        Client user = new Client("Tomas", "to@gm.co", "123");
+        Client user1 = new Client("Tomas1", "to@gm.co", "123");
+        Client user2 = new Client("Tomas2", "to@gm.co", "123");
+        Client user3 = new Client("Tomas3", "to@gm.co", "123");
+
+        mainWaitListAdd(user2);
+        mainWaitListAdd(user1);
+        mainWaitListAdd(user);
+        mainWaitListAdd(user3);
+
+        sPrint("Before removal: ");
+        printQueue(mainWaitList);
+        
+        WaitingListDeque(user, mainWaitList);
+        
+        sPrint("After removal: ");
+        printQueue(mainWaitList);
         
         // Field Level
         secFL.put('A', FLA);
@@ -1043,7 +1195,7 @@ public class Stadium {
                     + "\n2. Cancel a Reservation"
                     + "\n3. Reservation History"
                     + "\n4. Undo Previous Reservation"
-                    + "\n5. Wait List"
+                    + "\n5. Show Wait List"
                     + "\n6. Close App");
 
             try {
@@ -1065,8 +1217,8 @@ public class Stadium {
                     case 4: // Undo PreviousReservation
 
                         break;
-                    case 5: // Wait
-                        // showWaitingList();
+                    case 5: // WaitList
+                        WaitList();
                         break;
                     case 6:
                         sPrint("Closing Program...");
@@ -1074,7 +1226,6 @@ public class Stadium {
                         return;
                     default:
                         continue;
-
                 }
             } catch (InputMismatchException e) {
                 sPrint("Invalid Input");
