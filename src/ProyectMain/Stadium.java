@@ -90,7 +90,7 @@ public class Stadium {
 
     public static Client client;
 
-    public Scanner scanner = new Scanner(System.in); //TODO MAKE THE CODE USE THIS SCANNER ONLY AND ONLY IF
+    public static Scanner scanner = new Scanner(System.in); //TODO MAKE THE CODE USE THIS SCANNER ONLY AND ONLY IF
 
     public static void sPrint(String a) {System.out.println(a);} // Method to print faster like Python
     public static void clientPrint(Client c) {System.out.println(c.toString());}
@@ -117,6 +117,10 @@ public class Stadium {
     //         FLseats.put(client, s);
     //     }
     // }
+
+    public static Boolean isInSystem(String identifier){
+        return Client.clientIsInSystem(identifier, FLseats.keySet(), MLseats.keySet(), GSLseats.keySet());
+    }
 
     public static void Select(Character sec, int NofS, String A) {  //QUE RAYOS ES NOFS BROOOOOO TODO EXPLAINT WHAT IS THIS
         Scanner SelectMenu = new Scanner(System.in);
@@ -715,7 +719,13 @@ public class Stadium {
 
             sPrint("\nPlease enter the client's phone number: ");
             num = AddClientMenu.nextLine();
-
+            num = Client.removeHyphen(num);
+            while(!Client.validPhoneNumber(num)){
+                sPrint("\nPlease enter the client's phone number: ");
+                num = AddClientMenu.nextLine();
+                num = Client.removeHyphen(num);
+            }
+           
         } catch (InputMismatchException e) {
             sPrint("Please input the correct information");
         }
@@ -1061,6 +1071,23 @@ public class Stadium {
             }
         }
     }
+
+//TODO FINISH RESERVATION CANCELATION
+    public static void cancelReservation(){
+        sPrint("\n===UPRM Baseball Stadium Seat Manager===");
+        sPrint("======Reservation Cancelation====== ");
+        sPrint("Enter client's name or phone number: ");
+        try{
+            String clientIdentifier = scanner.nextLine();
+        
+        } catch(InputMismatchException e) {
+            sPrint("Invalid input.");
+        }
+
+
+
+    }
+
     
     // public static void showWaitingList() { // TODO : showWaitingList
     //     Queue<Client> copy = new LinkedList<>();
@@ -1141,7 +1168,7 @@ public class Stadium {
                         // Aqui method para add client
                         break;
                     case 2: // Cancel a Reservation
-                
+                        cancelReservation();
                         break;
                     case 3: // Show Reservation History
                         Transaction.printTransactionLinkedList(transactionRegister, menu);
