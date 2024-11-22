@@ -704,9 +704,14 @@ public class Stadium {
 
             sPrint("\nPlease enter the client's name: ");
             Cname = AddClientMenu.nextLine();
-
+            
             sPrint("\nPlease enter the client's email: ");
             email = AddClientMenu.nextLine();
+
+            while(!Client.validEmail(email)){
+                sPrint("\nPlease enter the client's email: ");
+                email = AddClientMenu.nextLine();
+            }
 
             sPrint("\nPlease enter the client's phone number: ");
             num = AddClientMenu.nextLine();

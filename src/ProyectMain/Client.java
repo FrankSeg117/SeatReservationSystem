@@ -1,5 +1,8 @@
 package ProyectMain;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Client {
     public String name;
     public String email;
@@ -17,6 +20,15 @@ public class Client {
 
     public String getEmail(){
         return email;
+    }
+
+    public static boolean validEmail(String email){
+
+        if(email.contains("@") && email.contains(".")){
+            return true;
+        }
+        System.out.println("Invalid email address.");
+        return false;
     }
 
 }
