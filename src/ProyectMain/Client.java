@@ -71,7 +71,7 @@ public class Client {
         return false;
     }
 
-    public static Boolean clientIsInSystem(String identifier, Set<Client> FL, Set<Client> ML, Set<Client>GL){
+    public static Boolean checkClientIsInSystem(String identifier, Set<Client> FL, Set<Client> ML, Set<Client>GL){
         Set<Client> allClients = new HashSet<>();
         allClients.addAll(FL);
         allClients.addAll(ML);
@@ -83,7 +83,7 @@ public class Client {
         }
         return false;
     }
-    public static Client clientInSystem(String identifier, Set<Client> FL, Set<Client> ML, Set<Client>GL){
+    public static Client getClientInSystem(String identifier, Set<Client> FL, Set<Client> ML, Set<Client>GL){
         Set<Client> allClients = new HashSet<>();
         allClients.addAll(FL);
         allClients.addAll(ML);
@@ -95,4 +95,5 @@ public class Client {
         }
         return null;
     }
+    
 }
