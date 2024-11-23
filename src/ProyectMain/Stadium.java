@@ -91,9 +91,6 @@ public class Stadium {
     public static Scanner scanner = new Scanner(System.in); //TODO MAKE THE CODE USE THIS SCANNER ONLY AND ONLY IF
 
     public static void sPrint(String a) {System.out.println(a);} // Method to print faster like Python
-    public static void clientPrint(Client c) {
-        System.out.println("Client: " + c.getName() + ", Email: " + c.getEmail() + ", PhoneNum: " + c.getPhone());
-    }
 
     public static void waitTime(int ms){
         // Esto es parte de java para crear una breve pausa en pantalla para que se
@@ -106,26 +103,13 @@ public class Stadium {
         }
     }
 
-    // public void AssignClientTOSeat(Client client, char section, String level) {
-    //     if (level.equals("FIELD")) {
-    //         Seat s = null;
-    //         for (Seat seat : fieldLevel) {
-    //             if (seat.getSection() == section /* and is not taken */) {
-
-    //             }
-    //         }
-    //         FLseats.put(client, s);
-    //     }
-    // }
-
-    //Methods for verifying if a client is in the system and to return said client
     public static Boolean isInSystem(String identifier){
         return Client.checkClientIsInSystem(identifier, FLseats.keySet(), MLseats.keySet(), GSLseats.keySet());
     }
+
     public static Client getInSystem(String identifier){
         return Client.getClientInSystem(identifier, FLseats.keySet(), MLseats.keySet(), GSLseats.keySet());
     }
-
 
     public static void Select(Character sec, int NofS, String A) {  //QUE RAYOS ES NOFS BROOOOOO TODO EXPLAINT WHAT IS THIS
         Scanner SelectMenu = new Scanner(System.in);
@@ -703,49 +687,6 @@ public class Stadium {
 
     }
 
-    public static Client addClient() {
-        String Cname = ""; // variables para crear y añadir cliente
-        String email = "";
-        String num = "";
-        Scanner AddClientMenu = new Scanner(System.in);
-        
-        try {
-            sPrint("==== Client Information ====");
-
-            sPrint("\nPlease enter the client's name: ");
-            Cname = AddClientMenu.nextLine();
-            
-            sPrint("\nPlease enter the client's email: ");
-            email = AddClientMenu.nextLine();
-
-            while(!Client.validEmail(email)){
-                sPrint("\nPlease enter the client's email: ");
-                email = AddClientMenu.nextLine();
-            }
-
-            sPrint("\nPlease enter the client's phone number: ");
-            num = AddClientMenu.nextLine();
-            num = Client.removeHyphen(num);
-            while(!Client.validPhoneNumber(num)){
-                sPrint("\nPlease enter the client's phone number: ");
-                num = AddClientMenu.nextLine();
-                num = Client.removeHyphen(num);
-            }
-
-
-        } catch (InputMismatchException e) {
-            sPrint("Please input the correct information");
-        }
-        if(!FLseats.isEmpty() || !MLseats.isEmpty() || !GSLseats.isEmpty()){
-            if(isInSystem(email) || isInSystem(num)){
-                sPrint("\nClient is already on the system.");
-                waitTime(2000);
-                return getInSystem(email);
-            }
-        }
-        return new Client(Cname, email, num);
-    }
-
     public static void Reservation(String level) {
         boolean MENU = true;
         Scanner menu = new Scanner(System.in);
@@ -1301,7 +1242,7 @@ public class Stadium {
                 switch (input) {
                     case 1 -> {
                         // Reserve Seat Client
-                        client = addClient();
+                        client = Client.addClient();
                         reserveSeat();
                         // Aqui method para add client
                     }
