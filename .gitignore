@@ -1,0 +1,26 @@
+# Ignore compiled class files
+*.class
+
+# Ignore build directories
+/bin/
+/out/
+/target/
+
+# Ignore IDE-specific files (VS Code, IntelliJ, Eclipse)
+.vscode/
+.idea/
+*.iml
+.classpath
+.project
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore logs
+*.log
+
+# Ignore backup or temporary files
+*.swp
+*.swo
+*~
