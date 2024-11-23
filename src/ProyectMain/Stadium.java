@@ -1148,9 +1148,9 @@ public class Stadium {
 
         sPrint("\nSelect WL to deque from");
         sPrint("1. Main Level WL"
-        + "\n 2. Field level WL"
-        + "\n 3. Grand stand level WL"
-        + "\n 4. Cancel");
+        + "\n2. Field level WL"
+        + "\n3. Grand stand level WL"
+        + "\n4. Cancel");
         
         try{
             sPrint("Enter Option Number: ");
@@ -1215,25 +1215,6 @@ public class Stadium {
 
     // Hacemos algo tipo putty?
     public static void main(String[] args) {
-
-        // Test WL stuff
-        Client user = new Client("Tomas", "to@gm.co", "123");
-        Client user1 = new Client("Tomas1", "to@gm.co", "123");
-        Client user2 = new Client("Tomas2", "to@gm.co", "123");
-        Client user3 = new Client("Tomas3", "to@gm.co", "123");
-
-        mainWaitListAdd(user2);
-        mainWaitListAdd(user1);
-        mainWaitListAdd(user);
-        mainWaitListAdd(user3);
-
-        sPrint("Before removal: ");
-        printQueue(mainWaitList);
-        
-        WaitingListDeque(user, mainWaitList);
-        
-        sPrint("After removal: ");
-        printQueue(mainWaitList);
         
         // Field Level
         secFL.put('A', FLA);
@@ -1271,42 +1252,46 @@ public class Stadium {
         while (MENU) {
             sPrint("===UPRM Baseball Stadium Seat Manager===");
             sPrint("\nPlease Select an Option: ");
-            sPrint("1. Reserve Seat"
-                    + "\n2. Cancel a Reservation"
-                    + "\n3. Reservation History"
-                    + "\n4. Undo Previous Reservation"
-                    + "\n5. Show Wait List"
-                    + "\n6. Close App");
+            sPrint("""
+                   1. Reserve Seat
+                   2. Cancel a Reservation
+                   3. Reservation History
+                   4. Undo Previous Reservation
+                   5. Show Wait List
+                   6. Close App
+                   """);
 
             try {
                 sPrint("Enter Option Number: ");
                 int input = menu.nextInt();
                 switch (input) {
-                    case 1: // Reserve Seat Client
+                    case 1 -> {
+                        // Reserve Seat Client
                         client = addClient();
                         reserveSeat();
                         // Aqui method para add client
-                        break;
-                    case 2: // Cancel a Reservation
-                
-                        break;
-                    case 3: // Show Reservation History
+                    }
+                    case 2 -> {
+                    }
+                    case 3 -> // Show Reservation History
                         Transaction.printTransactionLinkedList(transactionRegister, menu);
-                        break;
-                    case 4: // Undo Previous Reservation
-
-                        break;
-                    case 5: // WaitList
+                    case 4 -> {
+                    }
+                    case 5 -> // WaitList
                         WaitList();
-                        break;
-                    case 6:
+                    case 6 -> {
                         sPrint("Closing Program...");
+                        waitTime(3000);
                         menu.close();
                         return;
-                    default:
+                    }
+                    default -> {
                         continue;
+                    }
                 }
-            } catch (InputMismatchException e) {
+                // Cancel a Reservation
+                // Undo Previous Reservation
+                            } catch (InputMismatchException e) {
                 sPrint("Invalid Input");
                 menu.nextLine();
             }
