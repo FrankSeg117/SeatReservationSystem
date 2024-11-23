@@ -23,4 +23,19 @@ public class Client {
         return phonenum;
     }
 
+    public static boolean validEmail(String email){
+        int at;
+        int dot;
+        
+        if(email.contains("@") && email.contains(".")){
+            at = email.lastIndexOf("@");
+            dot = email.lastIndexOf(".");
+            if(at < dot && email.length()-dot >= 2){
+                return true;
+            }
+        }
+        System.out.println("Invalid email address.");
+        return false;
+    }
+
 }
