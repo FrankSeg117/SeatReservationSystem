@@ -88,7 +88,7 @@ public class Stadium {
 
     public static Client client;
 
-    public Scanner scanner = new Scanner(System.in); //TODO MAKE THE CODE USE THIS SCANNER ONLY AND ONLY IF
+    public static Scanner scanner = new Scanner(System.in); //TODO MAKE THE CODE USE THIS SCANNER ONLY AND ONLY IF
 
     public static void sPrint(String a) {System.out.println(a);} // Method to print faster like Python
     public static void clientPrint(Client c) {
@@ -117,6 +117,15 @@ public class Stadium {
     //         FLseats.put(client, s);
     //     }
     // }
+
+    //Methods for verifying if a client is in the system and to return said client
+    public static Boolean isInSystem(String identifier){
+        return Client.checkClientIsInSystem(identifier, FLseats.keySet(), MLseats.keySet(), GSLseats.keySet());
+    }
+    public static Client getInSystem(String identifier){
+        return Client.getClientInSystem(identifier, FLseats.keySet(), MLseats.keySet(), GSLseats.keySet());
+    }
+
 
     public static void Select(Character sec, int NofS, String A) {  //QUE RAYOS ES NOFS BROOOOOO TODO EXPLAINT WHAT IS THIS
         Scanner SelectMenu = new Scanner(System.in);
@@ -716,34 +725,22 @@ public class Stadium {
 
             sPrint("\nPlease enter the client's phone number: ");
             num = AddClientMenu.nextLine();
+            num = Client.removeHyphen(num);
+            while(!Client.validPhoneNumber(num)){
+                sPrint("\nPlease enter the client's phone number: ");
+                num = AddClientMenu.nextLine();
+                num = Client.removeHyphen(num);
+            }
 
 
         } catch (InputMismatchException e) {
             sPrint("Please input the correct information");
         }
-        if(!FLseats.isEmpty()){
-            for(Client a: FLseats.keySet()){
-                if(email.equals(a.getEmail())){
-                    sPrint("\nClient is already on the system.");
-                    return a;
-                }
+        if(!FLseats.isEmpty() || !MLseats.isEmpty() || !GSLseats.isEmpty()){
+            if(isInSystem(email) || isInSystem(num)){
+                sPrint("\nClient is already on the system.");
                 waitTime(2000);
-            }
-        }if(!MLseats.isEmpty()){
-            for(Client a: MLseats.keySet()){
-                if(email.equals(a.getEmail())){
-                    sPrint("\nClient is already on the system.");
-                    return a;
-                }
-                waitTime(2000);
-            }
-        }if(!GSLseats.isEmpty()){
-            for(Client a: GSLseats.keySet()){
-                if(email.equals(a.getEmail())){
-                    sPrint("\nClient is already on the system.");
-                    return a;
-                }
-                waitTime(2000);
+                return getInSystem(email);
             }
         }
         return new Client(Cname, email, num);
@@ -1064,6 +1061,38 @@ public class Stadium {
         }
     }
 
+//TODO FINISH RESERVATION CANCELATION
+    public static void cancelReservation(){
+        sPrint("\n===UPRM Baseball Stadium Seat Manager===");
+        sPrint("======Reservation Cancelation====== ");
+        boolean exit = false;
+        Client client = null;
+        while(!exit){
+            try{
+                sPrint("Enter client's name or phone number: ");
+                sPrint("Press 0 to exit");
+                String clientIdentifier = scanner.nextLine();
+                if(clientIdentifier.equals("0")){
+                    break;
+                }
+                if(isInSystem(clientIdentifier)){
+                    client = getInSystem(clientIdentifier);
+                    exit = true;
+                }
+                else{
+                    sPrint("Client was not found.");
+                    continue;
+                }
+            } catch(InputMismatchException e) {
+                sPrint("Invalid input.");
+            }
+            
+        }
+
+
+    }
+
+
     public static void WaitList(){
         Scanner sc = new Scanner(System.in);
 
@@ -1276,7 +1305,7 @@ public class Stadium {
                         reserveSeat();
                         // Aqui method para add client
                     }
-                    case 2 -> {
+                    case 2 -> {        cancelReservation();
                     }
                     case 3 -> // Show Reservation History
                         Transaction.printTransactionLinkedList(transactionRegister, menu);
