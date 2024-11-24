@@ -3,6 +3,9 @@ package ProyectMain;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.Stack;
+import java.util.Map;
+import java.util.HashMap;
 
 public class Transaction {
 
@@ -12,6 +15,7 @@ public class Transaction {
     private int money;
     private String transactionType; // Tipo de transaction: Reservacion, Cancelación, Deshacer
     private String level;
+    public static Stack<Transaction> undoStack = new Stack<>();
 
     public Transaction(Client client, ArrayList<Seat> reservedSeats, int money, String transactionType) {
         this.seatAmount = reservedSeats.size();
@@ -128,5 +132,20 @@ public class Transaction {
                 "\n - Type of transaction was: '" + transactionType + '\'' +
                 '}';
 
+    }
+
+    public static void undoLastTransaction(){
+        Transaction undo = undoStack.pop();
+        HashMap<String, HashMap<Client,ArrayList<Seat>>> undoDict = new HashMap<>();
+        undoDict.put("FieldLevel", Stadium.FLseats);
+        undoDict.put("MainLevel", Stadium.MLseats);
+        undoDict.put("GrandStandLevel", Stadium.GSLseats);
+        if(undo.transactionType.equals("Reservation")){
+            Stadium.cancelContinuation(undo.getLevel(), undo.getClient(), true);
+            
+        }else{
+            Stadium.Buy(undoDict.get(undo.getLevel()).get(undo.getClient()), undo.getRseats().get(0).getSection(), undo.getLevel(), undo.getRseats(),true);
+        }
+        
     }
 }

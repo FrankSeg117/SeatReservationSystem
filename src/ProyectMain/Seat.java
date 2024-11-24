@@ -35,13 +35,13 @@ public class Seat {
 
     public static int seatsTotalPrice(ArrayList<Seat> seats, String level){
         int price = 0;
-        if(level.equals("Field")){
+        if(level.equals("FieldLevel")){
             price = 300*seats.size();
         }
-        if(level.equals("Main")){
+        if(level.equals("MainLevel")){
             price = 120*seats.size();
         }
-        if(level.equals("Grand")){
+        if(level.equals("GrandStandLevel")){
             price = 45*seats.size();
         }
         return price;

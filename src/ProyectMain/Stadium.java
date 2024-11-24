@@ -17,7 +17,7 @@ public class Stadium {
     /*
      * Sets
      */
-    //Unreserved Seats
+    //Unreserved Seats - Here all unreserved seats are stored
     public static Set<Seat> mainLevel = new HashSet<>(); 
     public static Set<Seat> fieldLevel = new HashSet<>();
     public static Set<Seat> grandStandLevel = new HashSet<>();
@@ -62,7 +62,6 @@ public class Stadium {
     public static HashMap<Client, ArrayList<Seat>> FLseats = new HashMap<>(); // Structure to store Client in field level seats
     public static HashMap<Client, ArrayList<Seat>> MLseats = new HashMap<>(); // Structure to store Client in main level seats
     public static HashMap<Client, ArrayList<Seat>> GSLseats = new HashMap<>(); // Structure to store Client in Grand Stand level seats
-    // public HashMap<Client, Seat> GSseats = new HashMap<>(); // Structure to store Client in grandstand level seats
     
     //Reserved Seats
     public static HashMap<Character, Set<Seat>> secFL = new HashMap<>();
@@ -314,7 +313,7 @@ public class Stadium {
             }
         }
     
-        Buy(clientA, sec, A, newSeats);
+        Buy(clientA, sec, A, newSeats,false);
 
     }
 
@@ -464,50 +463,99 @@ public class Stadium {
     }
 
     @SuppressWarnings({"Unnecessary return statement", "UnnecessaryReturnStatement"}) // This avoids a warning
-    public static void Buy(ArrayList<Seat> Seat, Character sec, String A, ArrayList<Seat> newSeats) {
+    public static void Buy(ArrayList<Seat> Seat, Character sec, String Level, ArrayList<Seat> newSeats, boolean Undo) {
         int price = 0;
         String level = "";
         String conf = "";
-        try {
-            sPrint("==== Payment ====");
+        if(!Undo){
+            try {
+                sPrint("==== Payment ====");
 
-            if(A.equals("FL")){
-                price = 300*newSeats.size();
-                level = "FieldLevel";
-                sPrint("\nTotal Cost: $" + price);
+                if(Level.equals("FL")){ 
+                    price = 300*newSeats.size();
+                    level = "FieldLevel";
+                    sPrint("\nTotal Cost: $" + price);
+                }
+                if(Level.equals("ML")){
+                    price = 120*newSeats.size();
+                    level = "MainLevel";
+                    sPrint("\nTotal Cost: $" + price);
+                }
+                if(Level.equals("GSL")){
+                    price = 45*newSeats.size();
+                    level = "GrandStandLevel";
+                    sPrint("\nTotal Cost: $" + price);
+                }
+
+                sPrint("\nDo you wish to confirm your payment?");
+
+                sPrint("\nYes or No (Y/N):");
+
+                conf = scanner.nextLine();
+
+            } catch (InputMismatchException e) {
+                sPrint("Please input the correct information");
             }
-            if(A.equals("ML")){
-                price = 120*newSeats.size();
-                level = "MainLevel";
-                sPrint("\nTotal Cost: $" + price);
-            }
-            if(A.equals("GSL")){
-                price = 45*newSeats.size();
-                level = "GrandStandLevel";
-                sPrint("\nTotal Cost: $" + price);
-            }
-
-            sPrint("\nDo you wish to confirm your payment?");
-
-            sPrint("\nYes or No (Y/N):");
-
-            conf = scanner.nextLine();
-
-        } catch (InputMismatchException e) {
-            sPrint("Please input the correct information");
+        }else{
+            conf = "y";
         }
 
         if (conf.toLowerCase().equals("y")) {
             //Implementation for reservations in transaction history
-            transactionRegister.add(new Transaction(client, newSeats, price, "Reservation", level)); 
-
+            if(!Undo){
+                Transaction.undoStack.add(new Transaction(client, newSeats, price, "Reservation", level));
+            }
+                transactionRegister.add(new Transaction(client, newSeats, price, "Reservation", level));
+            if(Undo){
+                if(Level.equals("FieldLevel")){ 
+                    price = 300*newSeats.size();
+                    level = "FieldLevel";
+                    sPrint("\nTotal Cost: $" + price);
+                }
+                if(Level.equals("MainLevel")){
+                    price = 120*newSeats.size();
+                    level = "MainLevel";
+                    sPrint("\nTotal Cost: $" + price);
+                }
+                if(Level.equals("GrandStandLevel")){
+                    price = 45*newSeats.size();
+                    level = "GrandStandLevel";
+                    sPrint("\nTotal Cost: $" + price);
+                }
+                for(Seat b: newSeats){
+                    if(Level.equals("FieldLevel")){
+                        for (Seat a : fieldLevel) {
+                            if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
+                                Seat.add(a);
+                                newSeats.add(a);
+                            }
+                        }
+                    }
+                    if(Level.equals("MainLevel")){
+                        for (Seat a : mainLevel) {
+                            if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
+                                Seat.add(a);
+                                newSeats.add(a);
+                            }
+                        } 
+                    }
+                    if(Level.equals("GrandStandLevel")){
+                        for (Seat a : grandStandLevel) {
+                            if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
+                                Seat.add(a);
+                                newSeats.add(a);
+                            }
+                        } 
+                    }
+                }
+            }
             sPrint("\nTransaction Completed.");
 
             sPrint("\nReturning Back...");
     
             
             for (Seat b : Seat) {
-                if(A.equals("FL")){
+                if(Level.equals("FL") || Level.equals("FieldLevel")){
                     for(Seat a: fieldLevel){
                         if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
                             FLseats.put(client, Seat);
@@ -517,7 +565,7 @@ public class Stadium {
                         }
                     }
                 }
-                if(A.equals("ML")){
+                if(Level.equals("ML")|| Level.equals("MainLevel")){
                     for(Seat a: mainLevel){
                         if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
                             MLseats.put(client, Seat);
@@ -527,7 +575,7 @@ public class Stadium {
                         }
                     } 
                 }
-                if(A.equals("GSL")){
+                if(Level.equals("GSL")|| Level.equals("GSL")){
                     for(Seat a: grandStandLevel){
                         if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
                             GSLseats.put(client, Seat);
@@ -661,7 +709,7 @@ public class Stadium {
                     continue;
                 }
         }
-        Buy(clientA, sec, A, newSeats);
+        Buy(clientA, sec, A, newSeats,false);
     }
 
     public static Client addClient() {
@@ -1003,7 +1051,7 @@ public class Stadium {
                     + "\n2. Main Level" + " (Available Seats: " + mainLevel.size() + ")"
                     + "\n3. Grandstand Level" + " (Available Seats: " + grandStandLevel.size() + ")"
                     + "\n4. Return");
-            //
+            
             try {
                 sPrint("Enter Option Number: ");
                 int input = scanner.nextInt();
@@ -1132,19 +1180,19 @@ public static void cancelReservation(){
             switch (input) {
                 case 1:
                     if(fieldflag){
-                        cancelContinuation("Field", canceledClient);
+                        cancelContinuation("FieldLevel", canceledClient, false);
                         return;
                     }
                     break;
                 case 2:
                     if(mainflag){
-                        cancelContinuation("Main", canceledClient);
+                        cancelContinuation("MainLevel", canceledClient, false);
                         return;
                     }
                     break;
                 case 3:
                     if(grandflag){
-                        cancelContinuation("Grand",canceledClient);
+                        cancelContinuation("GrandStandLevel",canceledClient, false);
                         return;
                     }
                     break;
@@ -1159,16 +1207,16 @@ public static void cancelReservation(){
 
 }
 
-public static void cancelContinuation(String level, Client client){
+public static void cancelContinuation(String level, Client client, boolean Undo){
     int count = 0;
     boolean menu = true;
     ArrayList<Seat> seatsToReturn = new ArrayList<>(); //Here we will store the seats to unreserve
     while(menu){
-        sPrint("\nThe following seats from " + level + " level are assigned to this client: ");
+        sPrint("\nThe following seats from " + "level are assigned to this client: ");
         //Depending on the level selected (or previously available) we will show on screen
         // the corresponding seats assigned to that client in the respective level
-        if(level.equals("Field")){ 
-            sPrint("Field Level: ");
+        if(level.equals("FieldLevel")){ 
+            sPrint("FieldLevel: ");
             for(Seat s : FLseats.get(client)){
                 System.out.print(s.getSection() + "" + s.getSeatNumber() + " ");
                 count++;
@@ -1178,7 +1226,7 @@ public static void cancelContinuation(String level, Client client){
                 }
             } count = 0;
         }
-        if(level.equals("Main")){
+        if(level.equals("MainLevel")){
             sPrint("\nMain Level: ");
             for(Seat s : FLseats.get(client)){
                 System.out.print(s.getSection() + "" + s.getSeatNumber() + " ");
@@ -1188,7 +1236,7 @@ public static void cancelContinuation(String level, Client client){
                 }
             } count = 0;
         }
-        if(level.equals("Grand")){
+        if(level.equals("GrandStandLevel")){
             sPrint("\nGrand Stand Level: ");
             for(Seat s : FLseats.get(client)){
                 System.out.print(s.getSection()+ "" + s.getSeatNumber() + " ");
@@ -1198,21 +1246,29 @@ public static void cancelContinuation(String level, Client client){
                 }
             } count = 0;
         }
-        sPrint("""
-             \nEnter Seats in the format SectionNumber, Example: A24, B100.
-              - Enter 1 when finished to continue  
-              - Enter 2 to cancel ALL reservations in this level. 
-              - Enter 0 to leave without saving. 
-               """);
+        if(!Undo){
+            sPrint("""
+                \nEnter Seats in the format SectionNumber, Example: A24, B100.
+                - Enter 1 when finished to continue  
+                - Enter 2 to cancel ALL reservations in this level. 
+                - Enter 0 to leave without saving. 
+                """);
+        }
         char section;
         int seatNumber;
         try{
-            String cancel = scanner.nextLine();
+            String cancel;
+            if(Undo){
+                cancel = "2";
+            }else{
+                cancel = scanner.nextLine();
+                
+            }
             if (cancel.matches("[A-Z][0-9]+")) { // Matches a capital letter followed by one or more digits
                 section = Character.toUpperCase(cancel.charAt(0)); //We extract the section from the input
                 seatNumber = Integer.parseInt(cancel.substring(1)); //We extract the seat number specified
 
-                if (level.equals("Field")) {
+                if (level.equals("FieldLevel")) {
                     Iterator<Seat> iterator = FLseats.get(client).iterator();
                     while (iterator.hasNext()) {
                         Seat s = iterator.next();
@@ -1223,7 +1279,7 @@ public static void cancelContinuation(String level, Client client){
                         }
                     }
                 }
-                if (level.equals("Main")) {
+                if (level.equals("MainLevel")) {
                     Iterator<Seat> iterator = MLseats.get(client).iterator();
                     while (iterator.hasNext()) {
                         Seat s = iterator.next();
@@ -1234,7 +1290,7 @@ public static void cancelContinuation(String level, Client client){
                         }
                     }
                 }
-                if (level.equals("Grand")) {
+                if (level.equals("GrandStandLevel")) {
                     Iterator<Seat> iterator = GSLseats.get(client).iterator();
                     while (iterator.hasNext()) {
                         Seat s = iterator.next();
@@ -1247,15 +1303,15 @@ public static void cancelContinuation(String level, Client client){
                 }         
             } else if (cancel.equals("0")) { //Client exited without saving so we must return canceled reservations
                 while(!seatsToReturn.isEmpty()){
-                    if(level.equals("Field")){
+                    if(level.equals("FieldLevel")){
                         FLseats.get(client).add(seatsToReturn.getFirst());
                         seatsToReturn.removeFirst();
                     }
-                    if(level.equals("Main")){
+                    if(level.equals("MainLevel")){
                         MLseats.get(client).add(seatsToReturn.getFirst());
                         seatsToReturn.removeFirst();
                     }
-                    if(level.equals("Grand")){
+                    if(level.equals("GrandStandLevel")){
                         GSLseats.get(client).add(seatsToReturn.getFirst());
                         seatsToReturn.removeFirst();
                     }
@@ -1274,10 +1330,15 @@ public static void cancelContinuation(String level, Client client){
                 sPrint("Due balance of $" + price +  " has been returned");
                 returnSeats(seatsToReturn, level);
                 waitTime(2000);
+                transactionRegister.add(new Transaction(client, seatsToReturn, price, "Cancelation", level)); 
+                if(!Undo){
+                    Transaction.undoStack.add(new Transaction(client, seatsToReturn, price, "Cancelation", level));
+                }
                 return;
             }
+        
             else if(cancel.equals("2")){ //Client wants to cancel all reservations
-                if (level.equals("Field")) {
+                if (level.equals("FieldLevel")) {
                     Iterator<Seat> iterator = FLseats.get(client).iterator();
                     while (iterator.hasNext()) {
                         Seat s = iterator.next();
@@ -1286,7 +1347,7 @@ public static void cancelContinuation(String level, Client client){
 
                     }
                 }
-                if (level.equals("Main")) {
+                if (level.equals("MainLevel")) {
                     Iterator<Seat> iterator = MLseats.get(client).iterator();
                     while (iterator.hasNext()) {
                         Seat s = iterator.next();
@@ -1294,7 +1355,7 @@ public static void cancelContinuation(String level, Client client){
                         iterator.remove(); //Safe removal using iterator
                     }
                 }
-                if (level.equals("Grand")) {
+                if (level.equals("GrandStandLevel")) {
                     Iterator<Seat> iterator = GSLseats.get(client).iterator();
                     while (iterator.hasNext()) {
                         Seat s = iterator.next();
@@ -1305,14 +1366,18 @@ public static void cancelContinuation(String level, Client client){
                 int price = Seat.seatsTotalPrice(seatsToReturn, level);
                 sPrint("Due balance of $" + price +  " has been returned");
                 returnSeats(seatsToReturn, level);
-                if(level.equals("Field")){
+                if(level.equals("FieldLevel")){
                     FLseats.remove(client);
                 }
-                if(level.equals("Main")){
+                if(level.equals("MainLevel")){
                     MLseats.remove(client);
                 }
-                if(level.equals("Grand")){
+                if(level.equals("GrandStandLevel")){
                     GSLseats.remove(client);
+                }
+                transactionRegister.add(new Transaction(client, seatsToReturn, price, "Cancelation", level)); 
+                if(!Undo){
+                    Transaction.undoStack.add(new Transaction(client, seatsToReturn, price, "Cancelation", level));
                 }
                 waitTime(2000);
                 return;
@@ -1328,13 +1393,13 @@ public static void cancelContinuation(String level, Client client){
 }
 public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
     for(Seat seat : seatsToReturn){
-        if(level.equals("Field")){
+        if(level.equals("FieldLevel")){
             fieldLevel.add(seat);
         }
-        if(level.equals("Main")){
+        if(level.equals("MainLevel")){
             mainLevel.add(seat);
         }
-        if(level.equals("Grand")){
+        if(level.equals("GrandStandLevel")){
             grandStandLevel.add(seat);
         }
     }
@@ -1549,7 +1614,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
                    1. Reserve Seat
                    2. Cancel a Reservation
                    3. Reservation History
-                   4. Undo Previous Reservation
+                   4. Undo Previous Transaction
                    5. Show Wait List
                    6. Close App
                    """);
@@ -1570,7 +1635,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
                     case 3 -> // Show Reservation History
                         Transaction.printTransactionLinkedList(transactionRegister, scanner);
                     case 4 -> {     // TODO Undo Previous Transaction
-
+                        Transaction.undoLastTransaction();
                     }
                     case 5 -> // WaitList
                         WaitingList.WaitList();
