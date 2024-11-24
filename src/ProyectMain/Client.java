@@ -1,6 +1,8 @@
 package ProyectMain;
 
 import java.util.HashSet;
+import java.util.InputMismatchException;
+import java.util.Scanner;
 import java.util.Set;
 public class Client {
     public String name;
@@ -97,6 +99,53 @@ public class Client {
             }
         }
         return null;
+    }
+
+    public static void clientPrint(Client c) {
+        System.out.println("Client: " + c.getName() + ", Email: " + c.getEmail() + ", PhoneNum: " + c.getPhone());
+    }
+
+    public static Client addClient() {
+        String Cname = ""; // variables para crear y añadir cliente
+        String email = "";
+        String num = "";
+        Scanner AddClientMenu = new Scanner(System.in);
+        
+        try {
+            Stadium.sPrint("==== Client Information ====");
+
+            Stadium.sPrint("\nPlease enter the client's name: ");
+            Cname = AddClientMenu.nextLine();
+            
+            Stadium.sPrint("\nPlease enter the client's email: ");
+            email = AddClientMenu.nextLine();
+
+            while(!Client.validEmail(email)){
+                Stadium.sPrint("\nPlease enter the client's email: ");
+                email = AddClientMenu.nextLine();
+            }
+
+            Stadium.sPrint("\nPlease enter the client's phone number: ");
+            num = AddClientMenu.nextLine();
+            num = Client.removeHyphen(num);
+            while(!Client.validPhoneNumber(num)){
+                Stadium.sPrint("\nPlease enter the client's phone number: ");
+                num = AddClientMenu.nextLine();
+                num = Client.removeHyphen(num);
+            }
+
+
+        } catch (InputMismatchException e) {
+            Stadium.sPrint("Please input the correct information");
+        }
+        if(!Stadium.FLseats.isEmpty() || !Stadium.MLseats.isEmpty() || !Stadium.GSLseats.isEmpty()){
+            if(Stadium.isInSystem(email) || Stadium.isInSystem(num)){
+                Stadium.sPrint("\nClient is already on the system.");
+                Stadium.waitTime(2000);
+                return Stadium.getInSystem(email);
+            }
+        }
+        return new Client(Cname, email, num);
     }
     
 }

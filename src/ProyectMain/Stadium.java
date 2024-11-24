@@ -91,9 +91,6 @@ public class Stadium {
     public static Scanner scanner = new Scanner(System.in); //TODO MAKE THE CODE USE THIS SCANNER ONLY AND ONLY IF
 
     public static void sPrint(String a) {System.out.println(a);} // Method to print faster like Python
-    public static void clientPrint(Client c) {
-        System.out.println("Client: " + c.getName() + ", Email: " + c.getEmail() + ", PhoneNum: " + c.getPhone());
-    }
 
     public static void waitTime(int ms){
         // Esto es parte de java para crear una breve pausa en pantalla para que se
@@ -106,26 +103,13 @@ public class Stadium {
         }
     }
 
-    // public void AssignClientTOSeat(Client client, char section, String level) {
-    //     if (level.equals("FIELD")) {
-    //         Seat s = null;
-    //         for (Seat seat : fieldLevel) {
-    //             if (seat.getSection() == section /* and is not taken */) {
-
-    //             }
-    //         }
-    //         FLseats.put(client, s);
-    //     }
-    // }
-
-    //Methods for verifying if a client is in the system and to return said client
     public static Boolean isInSystem(String identifier){
         return Client.checkClientIsInSystem(identifier, FLseats.keySet(), MLseats.keySet(), GSLseats.keySet());
     }
+
     public static Client getInSystem(String identifier){
         return Client.getClientInSystem(identifier, FLseats.keySet(), MLseats.keySet(), GSLseats.keySet());
     }
-
 
     public static void Select(Character sec, int NofS, String A) {  //QUE RAYOS ES NOFS BROOOOOO TODO EXPLAINT WHAT IS THIS
         boolean avl = false;
@@ -1212,7 +1196,7 @@ public class Stadium {
                 switch (input) {
                     case 1 -> {
                         // Reserve Seat Client
-                        client = addClient();
+                        client = Client.addClient();
                         reserveSeat();
                     }
                     case 2 -> {        
