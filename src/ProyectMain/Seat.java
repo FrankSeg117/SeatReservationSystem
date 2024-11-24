@@ -1,5 +1,7 @@
 package ProyectMain;
 
+import java.util.ArrayList;
+
 public class Seat {
     public char section;
     public int row;
@@ -31,5 +33,18 @@ public class Seat {
         this.seatNumber = seatNumber;
     }
 
+    public static int seatsTotalPrice(ArrayList<Seat> seats, String level){
+        int price = 0;
+        if(level.equals("Field")){
+            price = 300*seats.size();
+        }
+        if(level.equals("Main")){
+            price = 120*seats.size();
+        }
+        if(level.equals("Grand")){
+            price = 45*seats.size();
+        }
+        return price;
+    }
 
 }
