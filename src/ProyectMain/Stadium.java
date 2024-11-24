@@ -527,7 +527,6 @@ public class Stadium {
                         for (Seat a : fieldLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
                                 Seat.add(a);
-                                newSeats.add(a);
                             }
                         }
                     }
@@ -535,7 +534,6 @@ public class Stadium {
                         for (Seat a : mainLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
                                 Seat.add(a);
-                                newSeats.add(a);
                             }
                         } 
                     }
@@ -543,7 +541,6 @@ public class Stadium {
                         for (Seat a : grandStandLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
                                 Seat.add(a);
-                                newSeats.add(a);
                             }
                         } 
                     }
