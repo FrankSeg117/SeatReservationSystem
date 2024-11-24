@@ -135,20 +135,32 @@ public class WaitingList {
     }
 
     public static void mainWaitListAdd(Client c){
-        Stadium.mainWaitList.add(c);
+        if(!Stadium.mainWaitList.contains(c)){
+            Stadium.mainWaitList.add(c);
+        } else{
+            Stadium.sPrint("Client already in Waiting List");
+        }
     }
 
     public static void fieldWaitListAdd(Client c){
-        Stadium.fieldWaitList.add(c);
+        if(!Stadium.fieldWaitList.contains(c)){
+            Stadium.fieldWaitList.add(c);
+        } else{
+            Stadium.sPrint("Client already in Waiting List");
+        }
     }
 
     public static void grandWaitListAdd(Client c){
-        Stadium.grandWaitList.add(c);
+        if(!Stadium.grandWaitList.contains(c)){
+            Stadium.grandWaitList.add(c);
+        } else{
+            Stadium.sPrint("Client already in Waiting List");
+        }
     }
 
     public static void printQueue(Queue<Client> queue) {
         for (Client c : queue) {
             System.out.println(c.getName());
-        }
+        } 
     }
 }
