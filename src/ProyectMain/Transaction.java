@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Stack;
-import java.util.Map;
 import java.util.HashMap;
 
 public class Transaction {
@@ -13,19 +12,13 @@ public class Transaction {
     private Client client;
     private ArrayList<Seat> rseats;
     private int money;
-    private String transactionType; // Tipo de transaction: Reservacion, Cancelación, Deshacer
+    private String transactionType; //Types will be either "FieldLevel", "MainLevel" or "GrandStandLevel"
     private String level;
+
+    //Stack of transactions, used for the Undo the most recent transaction
     public static Stack<Transaction> undoStack = new Stack<>();
 
-    public Transaction(Client client, ArrayList<Seat> reservedSeats, int money, String transactionType) {
-        this.seatAmount = reservedSeats.size();
-        this.client = client;
-        this.rseats = reservedSeats;
-        this.money = money;
-        this.transactionType = transactionType;
-        this.level = "MainLevel";
-    }
-
+    //Transaction constructor
     public Transaction(Client client, ArrayList<Seat> reservedSeats, int money, String transactionType, String level) {
         this.seatAmount = reservedSeats.size();
         this.client = client;
@@ -135,14 +128,18 @@ public class Transaction {
     }
 
     public static void undoLastTransaction(){
+        if(undoStack.isEmpty()){
+            Stadium.sPrint("There are no previous transactions to undo.");
+            Stadium.waitTime(2000);
+            return;
+        }
         Transaction undo = undoStack.pop();
         HashMap<String, HashMap<Client,ArrayList<Seat>>> undoDict = new HashMap<>();
         undoDict.put("FieldLevel", Stadium.FLseats);
         undoDict.put("MainLevel", Stadium.MLseats);
         undoDict.put("GrandStandLevel", Stadium.GSLseats);
         if(undo.transactionType.equals("Reservation")){
-            Stadium.cancelContinuation(undo.getLevel(), undo.getClient(), true);
-            
+            Stadium.cancelContinuation(undo.getLevel(), undo.getClient(), true, undo.getRseats());    
         }else{
             Stadium.Buy(undoDict.get(undo.getLevel()).get(undo.getClient()), undo.getRseats().get(0).getSection(), undo.getLevel(), undo.getRseats(),true);
         }

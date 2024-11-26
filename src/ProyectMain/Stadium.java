@@ -17,11 +17,12 @@ public class Stadium {
     /*
      * Sets
      */
-    //Unreserved Seats - Here all unreserved seats are stored
+    //Unreserved Seats - Here all unreserved seats are stored. this allows quick storage when canceling a reservation.
     public static Set<Seat> mainLevel = new HashSet<>(); 
     public static Set<Seat> fieldLevel = new HashSet<>();
     public static Set<Seat> grandStandLevel = new HashSet<>();
     
+    //This sets are for the storage of future bought seats which will be stored on dictionaries below
     public static Set<Seat> FLA = new HashSet<>();
     public static Set<Seat> FLB = new HashSet<>();
     public static Set<Seat> FLC = new HashSet<>();
@@ -48,33 +49,36 @@ public class Stadium {
     public static Set<Seat> GSLG = new HashSet<>();
     public static Set<Seat> GSLH = new HashSet<>();
     
-
-    /*
-     * Linked Lists
-     */
-
-    public static LinkedList<Transaction> transactionRegister = new LinkedList<>(); // placeholder, may need to create a class for transactions
-
     /*
      * Hash Maps
      */
 
-    public static HashMap<Client, ArrayList<Seat>> FLseats = new HashMap<>(); // Structure to store Client in field level seats
-    public static HashMap<Client, ArrayList<Seat>> MLseats = new HashMap<>(); // Structure to store Client in main level seats
-    public static HashMap<Client, ArrayList<Seat>> GSLseats = new HashMap<>(); // Structure to store Client in Grand Stand level seats
+    //Reserved Seats are stored in both dictionaries, where client has them and a set has them
+    //Dictionaries where we pair client with the seats they reserved
+    public static HashMap<Client, ArrayList<Seat>> FLseats = new HashMap<>();
+    public static HashMap<Client, ArrayList<Seat>> MLseats = new HashMap<>();
+    public static HashMap<Client, ArrayList<Seat>> GSLseats = new HashMap<>();
     
-    //Reserved Seats
+    //Dictionaries where we store bought seats with respect to their section
     public static HashMap<Character, Set<Seat>> secFL = new HashMap<>();
     public static HashMap<Character, Set<Seat>> secML = new HashMap<>();
     public static HashMap<Character, Set<Seat>> secGSL = new HashMap<>();
+
+    /*These dictionaries allow us to quickly know which seats are reserved, with respect to client, level and section.
+    We need this at the time of doing cancelations/Undos/Waitlists so we can easily know which seats we must transfer.*/
+
+    /*
+     * Linked Lists
+     */
+    //This linkedlist stores all types of transactions, if it is a reservation or a cancelation (including Undos)
+    public static LinkedList<Transaction> transactionRegister = new LinkedList<>();
 
     /*
      * Stacks
      */
 
-    public Stack<String> actions = new Stack<>();
-    // Para implementar la funcionalidad de deshacer, en la que se puede
-    // deshacer la última acción de reservación/cancelación
+    //The main stack for undoing transactions is stored on the Transaction Class file
+    //Since the stack stores transactions, its place is in that file.
 
     /*
      * Queues
@@ -88,150 +92,152 @@ public class Stadium {
      * Variables
      */
 
-    public static boolean buy = false;
-
+    //Client global variable, which is created/replaced each time a new client is added to the system
     public static Client client;
 
-    public static Scanner scanner = new Scanner(System.in); //TODO MAKE THE CODE USE THIS SCANNER ONLY AND ONLY IF
+    public static Scanner scanner = new Scanner(System.in); //TODO MAKE THE CODE USE THIS SCANNER ONLY - There are still methods in waitinglist using local scanners.
+    
+    // Method to print faster like Python, making code more readable, so we do not have to use System.out every time.
+    public static void sPrint(String a) {System.out.println(a);} 
 
-    public static void sPrint(String a) {System.out.println(a);} // Method to print faster like Python
-
+    /*This a function in java that is used to make a brief pause, usefull for having a pause on screen before
+    we change menus, so we give the operator a chance to read the final statements of certain functions*/
     public static void waitTime(int ms){
-        // Esto es parte de java para crear una breve pausa en pantalla para que se
-        // pueda mostrar un aviso de transaccion completada antes de volver al inicio
         try { 
-            Thread.sleep(ms); // Pausa por "ms" milisegundos
+            Thread.sleep(ms); // Pause for "ms" miliseconds
         }
         catch (InterruptedException e) {
                 e.printStackTrace();
         }
     }
 
+    //This method is used to verify if a Client exists on the system by passing an identifier (email or phone number).
     public static Boolean isInSystem(String identifier){
         return Client.checkClientIsInSystem(identifier, FLseats.keySet(), MLseats.keySet(), GSLseats.keySet());
     }
-
+    //This method is used to get a client already inside the system with the use of an identifier (email or phone number).
     public static Client getInSystem(String identifier){
         return Client.getClientInSystem(identifier, FLseats.keySet(), MLseats.keySet(), GSLseats.keySet());
     }
 
-    public static void Select(Character sec, int NumberOfSeats, String A) {  //NofS is NUMBER OF SEATS 
-        boolean avl = false;
-        int SN = 0;
-
+    //This method will allow the operator to select seats a client wants
+    public static void Select(Character sec, int NumberOfSeats, String Level) { 
+        boolean available = false;
+        int seatnum = 0;
+        
         sPrint("Available Seats:");
-
-        ArrayList<Seat> secA = new ArrayList<>();
-        if(A.equals("FL")){
+        //These loops will save and sort all available seats on a certain level based on their numebr
+        ArrayList<Seat> availableSeats = new ArrayList<>();
+        if(Level.equals("FieldLevel")){
             for (Seat a : fieldLevel) {
                 if (a.getSection() == sec) {
-                    secA.add(a);
+                    availableSeats.add(a);
                 }
             }
         }
-        if(A.equals("ML")){
+        if(Level.equals("MainLevel")){
             for (Seat a : mainLevel) {
                 if (a.getSection() == sec) {
-                    secA.add(a);
+                    availableSeats.add(a);
                 }
             }
         }
-        if(A.equals("GSL")){
+        if(Level.equals("GrandStandLevel")){
             for (Seat a : grandStandLevel) {
                 if (a.getSection() == sec) {
-                    secA.add(a);
+                    availableSeats.add(a);
                 }
             }
         }
-        secA.sort(Comparator.comparingInt(Seat::getSeatNumber));
+        availableSeats.sort(Comparator.comparingInt(Seat::getSeatNumber));
         
-        ArrayList<Seat> clientA = new ArrayList<>(); //Sillas que estaban en el cliente anteriormente (Si es que existia anteriormente)
-        ArrayList<Seat> newSeats = new ArrayList<>(); //Sillas que se añaden nuevas al cliente sin contar las anteriores (Esto nos sirve para registrar las transacciones de forma precisa)
+        ArrayList<Seat> previousSeats = new ArrayList<>(); //Seats that the client already had if said client existed before; it will be empty if client had no previous reservations
+        ArrayList<Seat> newSeats = new ArrayList<>(); //Here we will store the new seats a client will buy, without counting existing ones. Use full for registering new transactions correctly.
 
-        //En estos metodos se busca las sillas que el cliente tenia anteriormente en el diccionario
+        //These loops will look for any previous seat a client had reserved previously on that level
         if(!FLseats.isEmpty()){ 
             for(Client a: FLseats.keySet()){
                 if(client.equals(a)){
-                    clientA = FLseats.get(a);
+                    previousSeats = FLseats.get(a);
                     waitTime(2000);
                 }
             }
         }if(!MLseats.isEmpty()){
             for(Client a: MLseats.keySet()){
                 if(client.equals(a)){
-                    clientA = MLseats.get(a);
+                    previousSeats = MLseats.get(a);
                     waitTime(2000);
                 }
             }
         }if(!GSLseats.isEmpty()){
             for(Client a: GSLseats.keySet()){
                 if(client.equals(a)){
-                    clientA = GSLseats.get(a);
+                    previousSeats = GSLseats.get(a);
                     waitTime(2000);
                 }
             }
         }
-
+        //This loop will print on screen all seats available on that section, and leave empty spaces on already reserved seats
         for(int k = 0; k<NumberOfSeats; k++){
-            avl = false;
-            if(A.equals("FL")){
+            available = false;
+            if(Level.equals("FieldLevel")){
                 for(Seat a: secFL.get(sec)){
-                    if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
+                    if(a.getSeatNumber() < availableSeats.get(0).getSeatNumber()){
                         System.out.print("   ");
                     }
                 }
             }
-            if(A.equals("ML")){
+            if(Level.equals("MainLevel")){
                 for(Seat a: secML.get(sec)){
-                    if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
+                    if(a.getSeatNumber() < availableSeats.get(0).getSeatNumber()){
                         System.out.print("   ");
                     }
                 }
             }
-            if(A.equals("GSL")){
+            if(Level.equals("GrandStandLevel")){
                 for(Seat a: secGSL.get(sec)){
-                    if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
+                    if(a.getSeatNumber() < availableSeats.get(0).getSeatNumber()){
                         System.out.print("   ");
                     }
                 }
             }
-            for (int i = 0; i < secA.size(); i++) {
-                if(clientA.size() == 0){
-                    System.out.print(secA.get(i).getSeatNumber() + " ");
+            for (int i = 0; i < availableSeats.size(); i++) {
+                if(previousSeats.size() == 0){
+                    System.out.print(availableSeats.get(i).getSeatNumber() + " ");
                 }else{
-                    if(clientA.contains(secA.get(i))){
+                    if(previousSeats.contains(availableSeats.get(i))){
                         System.out.print("   ");
                     }else{
-                        System.out.print(secA.get(i).getSeatNumber() + " ");
+                        System.out.print(availableSeats.get(i).getSeatNumber() + " ");
                     }
                 }
                 
-                if(i != secA.size()-1){
-                    if(secA.get(i+1).getSeatNumber() - secA.get(i).getSeatNumber() > 1){
-                        for(int j = 1; secA.get(i+1).getSeatNumber() - secA.get(i).getSeatNumber()>j; j++){
+                if(i != availableSeats.size()-1){
+                    if(availableSeats.get(i+1).getSeatNumber() - availableSeats.get(i).getSeatNumber() > 1){
+                        for(int j = 1; availableSeats.get(i+1).getSeatNumber() - availableSeats.get(i).getSeatNumber()>j; j++){
                             System.out.print("   ");
                         }
                     }
                 }
-                if (secA.get(i).getSeatNumber() % 25 == 0) {
+                if (availableSeats.get(i).getSeatNumber() % 25 == 0) {
                     System.out.print("\n");
-                    if(A.equals("FL")){
+                    if(Level.equals("FieldLevel")){
                         for(Seat a: secFL.get(sec)){
-                            if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
+                            if(availableSeats.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < availableSeats.get(i+1).getSeatNumber()){
                                 System.out.print("   ");
                             }
                         }
                     }
-                    if(A.equals("ML")){
+                    if(Level.equals("MainLevel")){
                         for(Seat a: secML.get(sec)){
-                            if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
+                            if(availableSeats.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < availableSeats.get(i+1).getSeatNumber()){
                                 System.out.print("   ");
                             }
                         }
                     }
-                    if(A.equals("GSL")){
+                    if(Level.equals("GrandStandLevel")){
                         for(Seat a: secGSL.get(sec)){
-                            if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
+                            if(availableSeats.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < availableSeats.get(i+1).getSeatNumber()){
                                 System.out.print("   ");
                             }
                         }
@@ -243,86 +249,87 @@ public class Stadium {
             sPrint("\n==== Choose Seat ====");
 
             sPrint("\nSeat Number: ");
+            //Here we allow the operator to select seats, and if the selected seat is not available, give a warning and another try.
             try {
-                SN = scanner.nextInt();
+                seatnum = scanner.nextInt();
                 scanner.nextLine();
             } catch (InputMismatchException e) {
                 scanner.nextLine();
                 sPrint("Please input the correct information");
             }
-            if(A.equals("FL")){
+            if(Level.equals("FieldLevel")){
                 for (Seat a : fieldLevel) {
-                    if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                        if(!clientA.contains(a)){
-                            avl = true;
+                    if (a.getSection() == sec && a.getSeatNumber() == seatnum) {
+                        if(!previousSeats.contains(a)){
+                            available = true;
                         }
                     }
                 }
             }
-            if(A.equals("ML")){
+            if(Level.equals("MainLevel")){
                 for (Seat a : mainLevel) {
-                    if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                        if(!clientA.contains(a)){
-                            avl = true;
+                    if (a.getSection() == sec && a.getSeatNumber() == seatnum) {
+                        if(!previousSeats.contains(a)){
+                            available = true;
                         }
                     }
                 }
             }
-            if(A.equals("GSL")){
+            if(Level.equals("GrandStandLevel")){
                 for (Seat a : grandStandLevel) {
-                    if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                        if(!clientA.contains(a)){
-                            avl = true;
+                    if (a.getSection() == sec && a.getSeatNumber() == seatnum) {
+                        if(!previousSeats.contains(a)){
+                            available = true;
                         }
                     }
                 }
             }
 
-            if(!avl){
+            if(!available){
                 sPrint("\nSeat is not available.");
                 sPrint("\nTry again.");
                 waitTime(2000);
-
                 k--;
             }
-            if(avl){
-                if(A.equals("FL")){
+            if(available){
+                if(Level.equals("FieldLevel")){
                     for (Seat a : fieldLevel) {
-                        if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                            clientA.add(a);
+                        if (a.getSection() == sec && a.getSeatNumber() == seatnum) {
+                            previousSeats.add(a);
                             newSeats.add(a);
                         }
                     }
                 }
-                if(A.equals("ML")){
+                if(Level.equals("MainLevel")){
                     for (Seat a : mainLevel) {
-                        if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                            clientA.add(a);
+                        if (a.getSection() == sec && a.getSeatNumber() == seatnum) {
+                            previousSeats.add(a);
                             newSeats.add(a);
                         }
                     } 
                 }
-                if(A.equals("GSL")){
+                if(Level.equals("GrandStandLevel")){
                     for (Seat a : grandStandLevel) {
-                        if (a.getSection() == sec && a.getSeatNumber() == SN) {
-                            clientA.add(a);
+                        if (a.getSection() == sec && a.getSeatNumber() == seatnum) {
+                            previousSeats.add(a);
                             newSeats.add(a);
                         }
                     } 
                 }
             }
         }
-    
-        Buy(clientA, sec, A, newSeats,false);
+        //Once we know which seats will be bought, we call the Buy method.
+        Buy(previousSeats, sec, Level, newSeats,false);
 
     }
 
+    /* This method will print available seats on screen, 
+       and return whether the client wants to buy all remaining seats, select seats, or simply return.  */
     public static int previewSeats(Character sec, String A) {
-
         sPrint("\nAvailable Seats:");
 
         ArrayList<Seat> secA = new ArrayList<>();
-        if(A.equals("FL")){
+        if(A.equals("FieldLevel")){
             if(secFL.get(sec).size() == 100){
                 waitTime(2000);
                 sPrint("\nNo seats available.");
@@ -335,7 +342,7 @@ public class Stadium {
                 }
             }
         }
-        if(A.equals("ML")){
+        if(A.equals("MainLevel")){
             if(secML.get(sec).size() == 100){
                 waitTime(2000);
                 sPrint("\nNo seats available.");
@@ -348,7 +355,7 @@ public class Stadium {
                 }
             }
         }
-        if(A.equals("GSL")){
+        if(A.equals("GrandStandLevel")){
             if(secGSL.get(sec).size() == 250){
                 waitTime(2000);
                 sPrint("\nNo seats available.");
@@ -365,21 +372,21 @@ public class Stadium {
         
         ArrayList<Seat> clientA = new ArrayList<>();
 
-            if(A.equals("FL")){
+            if(A.equals("FieldLevel")){
                 for(Seat a: secFL.get(sec)){
                     if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
                         System.out.print("   ");
                     }
                 }
             }
-            if(A.equals("ML")){
+            if(A.equals("MainLevel")){
                 for(Seat a: secML.get(sec)){
                     if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
                         System.out.print("   ");
                     }
                 }
             }
-            if(A.equals("GSL")){
+            if(A.equals("GrandStandLevel")){
                 for(Seat a: secGSL.get(sec)){
                     if(a.getSeatNumber() < secA.get(0).getSeatNumber()){
                         System.out.print("   ");
@@ -406,21 +413,21 @@ public class Stadium {
                 }
                 if (secA.get(i).getSeatNumber() % 25 == 0) {
                     System.out.print("\n");
-                    if(A.equals("FL")){
+                    if(A.equals("FieldLevel")){
                         for(Seat a: secFL.get(sec)){
                             if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
                                 System.out.print("   ");
                             }
                         }
                     }
-                    if(A.equals("ML")){
+                    if(A.equals("MainLevel")){
                         for(Seat a: secML.get(sec)){
                             if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
                                 System.out.print("   ");
                             }
                         }
                     }
-                    if(A.equals("GSL")){
+                    if(A.equals("GrandStandLevel")){
                         for(Seat a: secGSL.get(sec)){
                             if(secA.get(i).getSeatNumber() < a.getSeatNumber() && a.getSeatNumber() < secA.get(i+1).getSeatNumber()){
                                 System.out.print("   ");
@@ -428,7 +435,6 @@ public class Stadium {
                         }
                     }
                 }
-                
             }
         
         waitTime(2000);
@@ -462,6 +468,8 @@ public class Stadium {
         return 2; 
     }
 
+    /* This method buys a certain amounts of seats specified by the arraylist and 
+       and register the transaction in the name of the given client.*/
     @SuppressWarnings({"Unnecessary return statement", "UnnecessaryReturnStatement"}) // This avoids a warning
     public static void Buy(ArrayList<Seat> Seat, Character sec, String Level, ArrayList<Seat> newSeats, boolean Undo) {
         int price = 0;
@@ -471,17 +479,17 @@ public class Stadium {
             try {
                 sPrint("==== Payment ====");
 
-                if(Level.equals("FL")){ 
+                if(Level.equals("FieldLevel")){ 
                     price = 300*newSeats.size();
                     level = "FieldLevel";
                     sPrint("\nTotal Cost: $" + price);
                 }
-                if(Level.equals("ML")){
+                if(Level.equals("MainLevel")){
                     price = 120*newSeats.size();
                     level = "MainLevel";
                     sPrint("\nTotal Cost: $" + price);
                 }
-                if(Level.equals("GSL")){
+                if(Level.equals("GrandStandLevel")){
                     price = 45*newSeats.size();
                     level = "GrandStandLevel";
                     sPrint("\nTotal Cost: $" + price);
@@ -509,17 +517,14 @@ public class Stadium {
             if(Undo){
                 if(Level.equals("FieldLevel")){ 
                     price = 300*newSeats.size();
-                    level = "FieldLevel";
                     sPrint("\nTotal Cost: $" + price);
                 }
                 if(Level.equals("MainLevel")){
                     price = 120*newSeats.size();
-                    level = "MainLevel";
                     sPrint("\nTotal Cost: $" + price);
                 }
                 if(Level.equals("GrandStandLevel")){
                     price = 45*newSeats.size();
-                    level = "GrandStandLevel";
                     sPrint("\nTotal Cost: $" + price);
                 }
                 for(Seat b: newSeats){
@@ -552,7 +557,7 @@ public class Stadium {
     
             
             for (Seat b : Seat) {
-                if(Level.equals("FL") || Level.equals("FieldLevel")){
+                if(Level.equals("FieldLevel")){
                     for(Seat a: fieldLevel){
                         if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
                             FLseats.put(client, Seat);
@@ -562,7 +567,7 @@ public class Stadium {
                         }
                     }
                 }
-                if(Level.equals("ML")|| Level.equals("MainLevel")){
+                if(Level.equals("MainLevel")){
                     for(Seat a: mainLevel){
                         if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
                             MLseats.put(client, Seat);
@@ -572,7 +577,7 @@ public class Stadium {
                         }
                     } 
                 }
-                if(Level.equals("GSL")|| Level.equals("GSL")){
+                if(Level.equals("GrandStandLevel")){
                     for(Seat a: grandStandLevel){
                         if (a.getSection() == sec && a.getSeatNumber() == b.getSeatNumber()) {
                             GSLseats.put(client, Seat);
@@ -591,27 +596,29 @@ public class Stadium {
         return;
     }
 
+    //This method is used to buy all the seats in a given section
+    //This is usefull for testing the Waiting List
     public static void BuyAll(Character sec, String A) {
         ArrayList<Seat> newSeats = new ArrayList<>();
         boolean avl = false;
         int SN = 0; 
 
         ArrayList<Seat> secA = new ArrayList<>();
-        if(A.equals("FL")){
+        if(A.equals("FieldLevel")){
             for (Seat a : fieldLevel) {
                 if (a.getSection() == sec) {
                     secA.add(a);
                 }
             }
         }
-        if(A.equals("ML")){
+        if(A.equals("MainLevel")){
             for (Seat a : mainLevel) {
                 if (a.getSection() == sec) {
                     secA.add(a);
                 }
             }
         }
-        if(A.equals("GSL")){
+        if(A.equals("GrandStandLevel")){
             for (Seat a : grandStandLevel) {
                 if (a.getSection() == sec) {
                     secA.add(a);
@@ -649,7 +656,7 @@ public class Stadium {
             avl = false;
                 SN = secA.get(k).getSeatNumber();
 
-                if(A.equals("FL")){
+                if(A.equals("FieldLevel")){
                     for (Seat a : fieldLevel) {
                         if (a.getSection() == sec && a.getSeatNumber() == SN) {
                             if(!clientA.contains(a)){
@@ -658,7 +665,7 @@ public class Stadium {
                         }
                     }
                 }
-                if(A.equals("ML")){
+                if(A.equals("MainLevel")){
                     for (Seat a : mainLevel) {
                         if (a.getSection() == sec && a.getSeatNumber() == SN) {
                             if(!clientA.contains(a)){
@@ -667,7 +674,7 @@ public class Stadium {
                         }
                     }
                 }
-                if(A.equals("GSL")){
+                if(A.equals("GrandStandLevel")){
                     for (Seat a : grandStandLevel) {
                         if (a.getSection() == sec && a.getSeatNumber() == SN) {
                             if(!clientA.contains(a)){
@@ -677,7 +684,7 @@ public class Stadium {
                     }
                 }
                 if(avl){
-                    if(A.equals("FL")){
+                    if(A.equals("FieldLevel")){
                         for (Seat a : fieldLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
                                 clientA.add(a);
@@ -685,7 +692,7 @@ public class Stadium {
                             }
                         }
                     }
-                    if(A.equals("ML")){
+                    if(A.equals("MainLevel")){
                         for (Seat a : mainLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
                                 clientA.add(a);
@@ -693,7 +700,7 @@ public class Stadium {
                             }
                         } 
                     }
-                    if(A.equals("GSL")){
+                    if(A.equals("GrandStandLevel")){
                         for (Seat a : grandStandLevel) {
                             if (a.getSection() == sec && a.getSeatNumber() == SN) {
                                 clientA.add(a);
@@ -709,6 +716,8 @@ public class Stadium {
         Buy(clientA, sec, A, newSeats,false);
     }
 
+    //This method asks the information from a client and returns 
+    //a new client with the given attributes
     public static Client addClient() {
         // variables para crear y añadir cliente
         String Cname = ""; 
@@ -753,21 +762,25 @@ public class Stadium {
         return new Client(Cname, email, num);
     }
 
+    /*
+    This method is the main for reservsastions. It shows available spaces on each section and allows the operator
+    to select wether to enter a waitlist if full, buy all, or a certein amount of seats
+    */ 
     public static void Reservation(String level) {        
         boolean MENU = true;
         while (MENU) {
             { // Verifies if there are seats still available
-                if(level.equals("FL") && !fieldLevel.isEmpty()){
-                sPrint("\n===UPRM Baseball Stadium Seat Manager===");
-                sPrint("\nPlease Select a Section: ");
-                sPrint("1. Section A (Available Seats: " + (100 - secFL.get('A').size()) + ")"
+                if(level.equals("FieldLevel") && !fieldLevel.isEmpty()){
+                    sPrint("\n===UPRM Baseball Stadium Seat Manager===");
+                    sPrint("\nPlease Select a Section: ");
+                    sPrint( "1. Section A (Available Seats: " + (100 - secFL.get('A').size()) + ")"
                         + "\n2. Section B (Available Seats: " + (100 - secFL.get('B').size()) + ")"
                         + "\n3. Section C (Available Seats: " + (100 - secFL.get('C').size()) + ")"
                         + "\n4. Section D (Available Seats: " + (100 - secFL.get('D').size()) + ")"
                         + "\n5. Section E (Available Seats: " + (100 - secFL.get('E').size()) + ")"
                         + "\n6. Return");
                 } else if (fieldLevel.isEmpty()){
-                    sPrint("\nNo seats are available at the moment\nWould you like to enter the Waiting List for this level? (Y/N)");
+                    sPrint("\nNo seats available in Field Level\nWould you like to enter the Waiting List for this level? (Y/N)");
                     String wList = scanner.next();
                     if(wList.equals("n")){
                         sPrint("\nCancelling operation...");
@@ -778,10 +791,10 @@ public class Stadium {
                         return;
                     }
                 } 
-                if(level.equals("ML") && !mainLevel.isEmpty()){
-                sPrint("\n===UPRM Baseball Stadium Seat Manager===");
-                sPrint("\nPlease Select a Section: ");
-                sPrint("1. Section A (Available Seats: " + (100 - secML.get('A').size()) + ")"
+                if(level.equals("MainLevel") && !mainLevel.isEmpty()){
+                    sPrint("\n===UPRM Baseball Stadium Seat Manager===");
+                    sPrint("\nPlease Select a Section: ");
+                    sPrint( "1. Section A (Available Seats: " + (100 - secML.get('A').size()) + ")"
                         + "\n2. Section B (Available Seats: " + (100 - secML.get('B').size()) + ")"
                         + "\n3. Section C (Available Seats: " + (100 - secML.get('C').size()) + ")"
                         + "\n4. Section D (Available Seats: " + (100 - secML.get('D').size()) + ")"
@@ -790,11 +803,11 @@ public class Stadium {
                         + "\n7. Section G (Available Seats: " + (100 - secML.get('G').size()) + ")"
                         + "\n8. Section H (Available Seats: " + (100 - secML.get('H').size()) + ")"
                         + "\n9. Section I (Available Seats: " + (100 - secML.get('I').size()) + ")"
-                        + "\n10. Section J (Available Seats: " + (100 - secML.get('J').size()) + ")"
+                        + "\n10. Section J (Available Seats: "+ (100 - secML.get('J').size()) + ")"
                         + "\n11. Return"
                         + "\n12. Buy everything");
                 } else if(mainLevel.isEmpty()) {
-                    sPrint("\nNo seats are available at the moment\nWould you like to enter the Waiting List for this level? (Y/N)");
+                    sPrint("\nNo seats available in Main Level\nWould you like to enter the Waiting List for this level? (Y/N)");
                     String wList = scanner.next();
                     if(wList.equals("n")){
                         sPrint("\nCancelling operation...");
@@ -806,10 +819,10 @@ public class Stadium {
                     }
                 }
             
-                if(level.equals("GSL") && !grandStandLevel.isEmpty()){
-                sPrint("\n===UPRM Baseball Stadium Seat Manager===");
-                sPrint("\nPlease Select a Section: ");
-                sPrint("1. Section A (Available Seats: " + (250 - secGSL.get('A').size()) + ")"
+                if(level.equals("GrandStandLevel") && !grandStandLevel.isEmpty()){
+                    sPrint("\n===UPRM Baseball Stadium Seat Manager===");
+                    sPrint("\nPlease Select a Section: ");
+                    sPrint( "1. Section A (Available Seats: " + (250 - secGSL.get('A').size()) + ")"
                         + "\n2. Section B (Available Seats: " + (250 - secGSL.get('B').size()) + ")"
                         + "\n3. Section C (Available Seats: " + (250 - secGSL.get('C').size()) + ")"
                         + "\n4. Section D (Available Seats: " + (250 - secGSL.get('D').size()) + ")"
@@ -819,7 +832,7 @@ public class Stadium {
                         + "\n8. Section H (Available Seats: " + (250 - secGSL.get('H').size()) + ")"
                         + "\n9. Return");
                 } else if(grandStandLevel.isEmpty()){
-                    sPrint("\nNo seats are available at the moment\nWould you like to enter the Waiting List for this level? (Y/N)");
+                    sPrint("\nNo seats available in Grand Stand Level\nWould you like to enter the Waiting List for this level? (Y/N)");
                     String wList = scanner.next();
                     if(wList.equals("n")){
                         sPrint("\nCancelling operation...");
@@ -854,15 +867,15 @@ public class Stadium {
                                     sPrint("Invalid Input");
                                     scanner.nextLine();
                                 }
-                                if(number_of_seats<=100 && number_of_seats>=1 && (level.equals("FL") || level.equals("ML"))){
+                                if(number_of_seats<=100 && number_of_seats>=1 && (level.equals("FieldLevel") || level.equals("MainLevel"))){
                                     retry = false;
-                                }else if(level.equals("FL")){
+                                }else if(level.equals("FieldLevel")){
                                     sPrint("Number of seats need to be from 1 to " + secFL.get('A').size());
-                                }else if(level.equals("ML")){
+                                }else if(level.equals("MainLevel")){
                                     sPrint("Number of seats need to be from 1 to " + secML.get('A').size());
-                                }else if(number_of_seats<=250 && number_of_seats>=1 && level.equals("GSL")){
+                                }else if(number_of_seats<=250 && number_of_seats>=1 && level.equals("GrandStandLevel")){
                                     retry = false;
-                                }else if(level.equals("GSL")){
+                                }else if(level.equals("GrandStandLevel")){
                                     sPrint("Number of seats need to be from 1 to " + secGSL.get('A').size());
                                 }
                             }
@@ -935,7 +948,7 @@ public class Stadium {
                             break;  
                         }
                     case 6:
-                        if(level.equals("ML") || level.equals("GSL")){
+                        if(level.equals("MainLevel") || level.equals("GrandStandLevel")){
                             sPrint("\nHow many seats do you want? ");
                             sel = previewSeats('F', level);
                             if(sel == 0){
@@ -983,7 +996,7 @@ public class Stadium {
                             break;  
                         }
                     case 9:
-                        if(level.equals("GSL")){
+                        if(level.equals("GrandStandLevel")){
                             return;
                         }
                         sPrint("\nHow many seats do you want? ");
@@ -1035,10 +1048,12 @@ public class Stadium {
                 sPrint("Invalid Input");
                 scanner.nextLine();
             }
+            }
         }
     }
-}
-
+    /*Method that lets the operator select which level to reserve seats from
+    it will later call the method necessary to make reservations inside a particular level.
+     */
     public static void reserveSeat() {
         boolean MENU = true;
         while (MENU) {
@@ -1054,10 +1069,10 @@ public class Stadium {
                 int input = scanner.nextInt();
                 scanner.nextLine();
                 switch (input) {
-                    case 1 -> Reservation("FL");
+                    case 1 -> Reservation("FieldLevel");
                     // Aqui method para add client
-                    case 2 -> Reservation("ML");
-                    case 3 -> Reservation("GSL");
+                    case 2 -> Reservation("MainLevel");
+                    case 3 -> Reservation("GrandStandLevel");
                     case 4 -> {
                         return;
                     }
@@ -1072,6 +1087,8 @@ public class Stadium {
         }
     }
 
+    /*This method creates all seats of the program, which will be added to the unbought seats
+    set. If we dont create seats, we will not be able to reserve any positions*/ 
     public static void createSeats() {
         Seat seat;
         int row = 1;
@@ -1123,7 +1140,9 @@ public class Stadium {
         }
     }
 
-//TODO FINISH RESERVATION CANCELATION
+//TODO TEST IF UNDO OF TWO RESERVATIONS WORK WITH THIS CODE
+/* This method takes care of the initial steps for a cancelation, asking for the client's details and checking
+if said client exists in the system before proceeding*/ 
 public static void cancelReservation(){
     sPrint("\n===UPRM Baseball Stadium Seat Manager===");
     sPrint("========Reservation Cancelation======== ");
@@ -1177,19 +1196,19 @@ public static void cancelReservation(){
             switch (input) {
                 case 1:
                     if(fieldflag){
-                        cancelContinuation("FieldLevel", canceledClient, false);
+                        cancelContinuation("FieldLevel", canceledClient, false, null);
                         return;
                     }
                     break;
                 case 2:
                     if(mainflag){
-                        cancelContinuation("MainLevel", canceledClient, false);
+                        cancelContinuation("MainLevel", canceledClient, false, null);
                         return;
                     }
                     break;
                 case 3:
                     if(grandflag){
-                        cancelContinuation("GrandStandLevel",canceledClient, false);
+                        cancelContinuation("GrandStandLevel",canceledClient, false, null);
                         return;
                     }
                     break;
@@ -1203,12 +1222,65 @@ public static void cancelReservation(){
     }
 
 }
-
-public static void cancelContinuation(String level, Client client, boolean Undo){
+/* This method is the next step of a cancelation, which will take care of showing the seats a client has
+and allows to select which to cancel and return to the pool of available seats.
+It also has additional parameters (Undo and optionalSeatList) which are used in the case of an undo, which already knows
+which seats will be returned. */
+public static void cancelContinuation(String level, Client client, boolean Undo, ArrayList<Seat> optionalSeatList){
     int count = 0;
     boolean menu = true;
     ArrayList<Seat> seatsToReturn = new ArrayList<>(); //Here we will store the seats to unreserve
-    while(menu){
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //If this is an undo, we will do a streamlined approach to the cancelation since we already know exactly which seats are to be returned.
+    if(Undo){
+        seatsToReturn = optionalSeatList; //Here we will store the seats to unreserve in the case of an Undo
+        if(seatsToReturn.isEmpty()){
+            sPrint("No reservations were canceled.");
+            waitTime(2000);
+            return;
+        }
+        for(Seat returningSeat : seatsToReturn){
+            if (level.equals("FieldLevel")) {
+                Iterator<Seat> iterator = FLseats.get(client).iterator();
+                while (iterator.hasNext()) {
+                    Seat clientSeat = iterator.next();
+                    if (clientSeat.getSection() == returningSeat.getSection() && clientSeat.getSeatNumber() == returningSeat.getSeatNumber()) {
+                        iterator.remove(); // Safe removal using iterator
+                        continue;
+                    }
+                }
+            }
+            if (level.equals("MainLevel")) {
+                Iterator<Seat> iterator = MLseats.get(client).iterator();
+                while (iterator.hasNext()) {
+                    Seat clientSeat = iterator.next();
+                    if (clientSeat.getSection() == returningSeat.getSection() && clientSeat.getSeatNumber() == returningSeat.getSeatNumber()) {
+                        iterator.remove(); // Safe removal using iterator
+                        continue;
+                    }
+                }
+            }
+            if (level.equals("GrandStandLevel")) {
+                Iterator<Seat> iterator = GSLseats.get(client).iterator();
+                while (iterator.hasNext()) {
+                    Seat clientSeat = iterator.next();
+                    if (clientSeat.getSection() == returningSeat.getSection() && clientSeat.getSeatNumber() == returningSeat.getSeatNumber()) {
+                        iterator.remove(); // Safe removal using iterator
+                        continue;
+                    }
+                }
+            }
+        }
+        int price = Seat.seatsTotalPrice(seatsToReturn, level);
+        sPrint("Due balance of $" + price +  " has been returned");
+        returnSeats(seatsToReturn, level);
+        transactionRegister.add(new Transaction(client, seatsToReturn, price, "Cancelation", level)); 
+        waitTime(2000);
+        return;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    while(menu && !Undo){
         sPrint("\nThe following seats from " + "level are assigned to this client: ");
         //Depending on the level selected (or previously available) we will show on screen
         // the corresponding seats assigned to that client in the respective level
@@ -1225,8 +1297,9 @@ public static void cancelContinuation(String level, Client client, boolean Undo)
         }
         if(level.equals("MainLevel")){
             sPrint("\nMain Level: ");
-            for(Seat s : FLseats.get(client)){
+            for(Seat s : MLseats.get(client)){
                 System.out.print(s.getSection() + "" + s.getSeatNumber() + " ");
+                count++;
                 if(count == 25){
                     System.out.println();
                     count = 0;
@@ -1235,8 +1308,9 @@ public static void cancelContinuation(String level, Client client, boolean Undo)
         }
         if(level.equals("GrandStandLevel")){
             sPrint("\nGrand Stand Level: ");
-            for(Seat s : FLseats.get(client)){
+            for(Seat s : GSLseats.get(client)){
                 System.out.print(s.getSection()+ "" + s.getSeatNumber() + " ");
+                count++;
                 if(count == 25){
                     System.out.println();
                     count = 0;
@@ -1275,6 +1349,7 @@ public static void cancelContinuation(String level, Client client, boolean Undo)
                             continue;
                         }
                     }
+
                 }
                 if (level.equals("MainLevel")) {
                     Iterator<Seat> iterator = MLseats.get(client).iterator();
@@ -1297,8 +1372,9 @@ public static void cancelContinuation(String level, Client client, boolean Undo)
                             continue;
                         }
                     }
-                }         
-            } else if (cancel.equals("0")) { //Client exited without saving so we must return canceled reservations
+                }  
+            //Client exited without saving so we must return canceled reservations       
+            } else if (cancel.equals("0")) { 
                 while(!seatsToReturn.isEmpty()){
                     if(level.equals("FieldLevel")){
                         FLseats.get(client).add(seatsToReturn.getFirst());
@@ -1317,7 +1393,8 @@ public static void cancelContinuation(String level, Client client, boolean Undo)
                 waitTime(2000);
                 return;
             }
-            else if(cancel.equals("1")){ //Client wants to cancel selected reservations
+            //Client wants to cancel selected reservations
+            else if(cancel.equals("1")){ 
                 if(seatsToReturn.isEmpty()){
                     sPrint("No reservations were canceled.");
                     waitTime(2000);
@@ -1333,8 +1410,8 @@ public static void cancelContinuation(String level, Client client, boolean Undo)
                 }
                 return;
             }
-        
-            else if(cancel.equals("2")){ //Client wants to cancel all reservations
+            //Client wants to cancel all reservations
+            else if(cancel.equals("2")){ 
                 if (level.equals("FieldLevel")) {
                     Iterator<Seat> iterator = FLseats.get(client).iterator();
                     while (iterator.hasNext()) {
@@ -1388,21 +1465,27 @@ public static void cancelContinuation(String level, Client client, boolean Undo)
         }
     }
 }
+
+/* This method returns an array of seats to the pool of available seats and removes them from
+the sets that contain reserved seats which are inside the dictionaries of each level */
 public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
     for(Seat seat : seatsToReturn){
         if(level.equals("FieldLevel")){
             fieldLevel.add(seat);
+            secFL.get(seat.getSection()).remove(seat);
         }
         if(level.equals("MainLevel")){
             mainLevel.add(seat);
+            secML.get(seat.getSection()).remove(seat);
         }
         if(level.equals("GrandStandLevel")){
             grandStandLevel.add(seat);
+            secGSL.get(seat.getSection()).remove(seat);
         }
     }
 }
 
-
+//TODO COMMENT THIS TOMAS PLEASE XOXO
     public static void WaitList(){
         Scanner sc = new Scanner(System.in);
 
@@ -1432,7 +1515,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
             sc.nextLine();
         }
     }
-    
+    //TODO COMMENT THIS TOMAS PLEASE XOXO
     public static void showWaitingList() {
         Scanner sc = new Scanner(System.in);
         sPrint("\\*Select Waiting list to display*\\\n");
@@ -1486,7 +1569,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
             sc.nextLine();
         }
     }
-
+    //TODO COMMENT THIS TOMAS PLEASE XOXO
     public static void WLDequeHelper(){
         Scanner sc = new Scanner(System.in);
 
@@ -1519,7 +1602,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
             sc.nextLine();
         }
     }
-
+    //TODO COMMENT THIS TOMAS PLEASE XOXO
     public static void WaitingListDeque(Client c, Queue<Client> levelWL){
         Queue<Client> temp = new LinkedList<>();
 
@@ -1557,7 +1640,8 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
         }
     }
 
-
+    /* These methods add the seats that will contain bought seats to dictionaries depending on the section they
+    are apart of */
     public static void fLevelCreate(){
         // Field Level
         secFL.put('A', FLA);
@@ -1593,7 +1677,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
         secGSL.put('H', GSLH);
     }
 
-    // Hacemos algo tipo putty?
+    /* main app run */
     public static void main(String[] args) {
         
         fLevelCreate();
@@ -1623,7 +1707,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
                 switch (input) {
                     case 1 -> {
                         // Reserve Seat Client
-                        client = Client.addClient();
+                        client = Client.addClient(scanner);
                         reserveSeat();
                     }
                     case 2 -> {        

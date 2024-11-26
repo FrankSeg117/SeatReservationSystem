@@ -105,32 +105,31 @@ public class Client {
         System.out.println("Client: " + c.getName() + ", Email: " + c.getEmail() + ", PhoneNum: " + c.getPhone());
     }
 
-    public static Client addClient() {
+    public static Client addClient(Scanner scanner) {
         String Cname = ""; // variables para crear y añadir cliente
         String email = "";
         String num = "";
-        Scanner AddClientMenu = new Scanner(System.in);
         
         try {
             Stadium.sPrint("==== Client Information ====");
 
             Stadium.sPrint("\nPlease enter the client's name: ");
-            Cname = AddClientMenu.nextLine();
+            Cname = scanner.nextLine();
             
             Stadium.sPrint("\nPlease enter the client's email: ");
-            email = AddClientMenu.nextLine();
+            email = scanner.nextLine();
 
             while(!Client.validEmail(email)){
                 Stadium.sPrint("\nPlease enter the client's email: ");
-                email = AddClientMenu.nextLine();
+                email = scanner.nextLine();
             }
 
             Stadium.sPrint("\nPlease enter the client's phone number: ");
-            num = AddClientMenu.nextLine();
+            num = scanner.nextLine();
             num = Client.removeHyphen(num);
             while(!Client.validPhoneNumber(num)){
                 Stadium.sPrint("\nPlease enter the client's phone number: ");
-                num = AddClientMenu.nextLine();
+                num = scanner.nextLine();
                 num = Client.removeHyphen(num);
             }
 
