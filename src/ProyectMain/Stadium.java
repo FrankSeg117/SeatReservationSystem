@@ -440,12 +440,7 @@ public class Stadium {
         waitTime(2000);
         boolean OPTION = true;
         while (OPTION) {
-            sPrint("\nPlease select an option: ");
-            sPrint("""
-                   1. Select Seats
-                   2. Buy Remaining Seats
-                   3. Return""");
-            //
+            Menu.handleSeatOption();
             try {
                 sPrint("Enter Option Number: ");
                 int input = scanner.nextInt();
@@ -770,80 +765,7 @@ public class Stadium {
         boolean MENU = true;
         while (MENU) {
             { // Verifies if there are seats still available
-                if(level.equals("FieldLevel") && !fieldLevel.isEmpty()){
-                    sPrint("\n===UPRM Baseball Stadium Seat Manager===");
-                    sPrint("\nPlease Select a Section: ");
-                    sPrint( "1. Section A (Available Seats: " + (100 - secFL.get('A').size()) + ")"
-                        + "\n2. Section B (Available Seats: " + (100 - secFL.get('B').size()) + ")"
-                        + "\n3. Section C (Available Seats: " + (100 - secFL.get('C').size()) + ")"
-                        + "\n4. Section D (Available Seats: " + (100 - secFL.get('D').size()) + ")"
-                        + "\n5. Section E (Available Seats: " + (100 - secFL.get('E').size()) + ")"
-                        + "\n6. Return");
-                } else if (fieldLevel.isEmpty()){
-                    sPrint("\nNo seats available in Field Level\nWould you like to enter the Waiting List for this level? (Y/N)");
-                    String wList = scanner.next();
-                    if(wList.equals("n")){
-                        sPrint("\nCancelling operation...");
-                        waitTime(1500);
-                        return;
-                    } else if(wList.equals("y")) {
-                        WaitingList.fieldWaitListAdd(client);
-                        return;
-                    }
-                } 
-                if(level.equals("MainLevel") && !mainLevel.isEmpty()){
-                    sPrint("\n===UPRM Baseball Stadium Seat Manager===");
-                    sPrint("\nPlease Select a Section: ");
-                    sPrint( "1. Section A (Available Seats: " + (100 - secML.get('A').size()) + ")"
-                        + "\n2. Section B (Available Seats: " + (100 - secML.get('B').size()) + ")"
-                        + "\n3. Section C (Available Seats: " + (100 - secML.get('C').size()) + ")"
-                        + "\n4. Section D (Available Seats: " + (100 - secML.get('D').size()) + ")"
-                        + "\n5. Section E (Available Seats: " + (100 - secML.get('E').size()) + ")"
-                        + "\n6. Section F (Available Seats: " + (100 - secML.get('F').size()) + ")"
-                        + "\n7. Section G (Available Seats: " + (100 - secML.get('G').size()) + ")"
-                        + "\n8. Section H (Available Seats: " + (100 - secML.get('H').size()) + ")"
-                        + "\n9. Section I (Available Seats: " + (100 - secML.get('I').size()) + ")"
-                        + "\n10. Section J (Available Seats: "+ (100 - secML.get('J').size()) + ")"
-                        + "\n11. Return"
-                        + "\n12. Buy everything");
-                } else if(mainLevel.isEmpty()) {
-                    sPrint("\nNo seats available in Main Level\nWould you like to enter the Waiting List for this level? (Y/N)");
-                    String wList = scanner.next();
-                    if(wList.equals("n")){
-                        sPrint("\nCancelling operation...");
-                        waitTime(1500);
-                        return;
-                    } else if(wList.equals("y")) {
-                        WaitingList.mainWaitListAdd(client);
-                        return;
-                    }
-                }
-            
-                if(level.equals("GrandStandLevel") && !grandStandLevel.isEmpty()){
-                    sPrint("\n===UPRM Baseball Stadium Seat Manager===");
-                    sPrint("\nPlease Select a Section: ");
-                    sPrint( "1. Section A (Available Seats: " + (250 - secGSL.get('A').size()) + ")"
-                        + "\n2. Section B (Available Seats: " + (250 - secGSL.get('B').size()) + ")"
-                        + "\n3. Section C (Available Seats: " + (250 - secGSL.get('C').size()) + ")"
-                        + "\n4. Section D (Available Seats: " + (250 - secGSL.get('D').size()) + ")"
-                        + "\n5. Section E (Available Seats: " + (250 - secGSL.get('E').size()) + ")"
-                        + "\n6. Section F (Available Seats: " + (250 - secGSL.get('F').size()) + ")"
-                        + "\n7. Section G (Available Seats: " + (250 - secGSL.get('G').size()) + ")"
-                        + "\n8. Section H (Available Seats: " + (250 - secGSL.get('H').size()) + ")"
-                        + "\n9. Return");
-                } else if(grandStandLevel.isEmpty()){
-                    sPrint("\nNo seats available in Grand Stand Level\nWould you like to enter the Waiting List for this level? (Y/N)");
-                    String wList = scanner.next();
-                    if(wList.equals("n")){
-                        sPrint("\nCancelling operation...");
-                        waitTime(1500);
-                        return;
-                    } else if(wList.equals("y")) {
-                        WaitingList.grandWaitListAdd(client);
-                        return;
-                    }
-                }
-
+                Menu.reservationMenu(level);
             try {
                 sPrint("Enter Option Number: ");
                 int input = scanner.nextInt();
@@ -1057,12 +979,8 @@ public class Stadium {
     public static void reserveSeat() {
         boolean MENU = true;
         while (MENU) {
-            sPrint("\n===UPRM Baseball Stadium Seat Manager===");
-            sPrint("\nPlease Select a Seat Level: ");
-            sPrint("1. Field Level" + " (Available Seats: " + fieldLevel.size() + ")"
-                    + "\n2. Main Level" + " (Available Seats: " + mainLevel.size() + ")"
-                    + "\n3. Grandstand Level" + " (Available Seats: " + grandStandLevel.size() + ")"
-                    + "\n4. Return");
+            
+            Menu.levelSelectionMenu();
             
             try {
                 sPrint("Enter Option Number: ");
@@ -1318,12 +1236,7 @@ public static void cancelContinuation(String level, Client client, boolean Undo,
             } count = 0;
         }
         if(!Undo){
-            sPrint("""
-                \nEnter Seats in the format SectionNumber, Example: A24, B100.
-                - Enter 1 when finished to continue  
-                - Enter 2 to cancel ALL reservations in this level. 
-                - Enter 0 to leave without saving. 
-                """);
+            Menu.cancelMenu();
         }
         char section;
         int seatNumber;
@@ -1489,11 +1402,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
     public static void WaitList(){
         Scanner sc = new Scanner(System.in);
 
-        sPrint("\\*Waiting list menu*\\\n");
-        sPrint("Please select an option:"
-        + "\n1. Show Waiting List"
-        + "\n2. Quit Waiting List"
-        + "\n3. Exit");
+        Menu.waitingListMenu();
 
         try{
             sPrint("Enter Option Number: ");
@@ -1518,12 +1427,8 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
     //TODO COMMENT THIS TOMAS PLEASE XOXO
     public static void showWaitingList() {
         Scanner sc = new Scanner(System.in);
-        sPrint("\\*Select Waiting list to display*\\\n");
-        sPrint("Please select an option:"
-        + "\n1. Main level Waiting List"
-        + "\n2. Field level Waiting List"
-        + "\n3. Grand Stand level Waiting List"
-        + "\n4. Exit");
+        
+        Menu.waitingListLevelMenu();
 
         try{
             sPrint("Enter Option Number: ");
@@ -1684,55 +1589,8 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
         mLevelCreate();
         gsLevelCreate();
 
-        boolean MENU = true;
-
         createSeats();
 
-        while (MENU) {
-            sPrint("\n\n===UPRM Baseball Stadium Seat Manager===");
-            sPrint("\nPlease Select an Option: ");
-            sPrint("""
-                   1. Reserve Seat
-                   2. Cancel a Reservation
-                   3. Reservation History
-                   4. Undo Previous Transaction
-                   5. Show Wait List
-                   6. Close App
-                   """);
-
-            try {
-                sPrint("Enter Option Number: ");
-                int input = scanner.nextInt();
-                scanner.nextLine();
-                switch (input) {
-                    case 1 -> {
-                        // Reserve Seat Client
-                        client = Client.addClient(scanner);
-                        reserveSeat();
-                    }
-                    case 2 -> {        
-                        cancelReservation();
-                    }
-                    case 3 -> // Show Reservation History
-                        Transaction.printTransactionLinkedList(transactionRegister, scanner);
-                    case 4 -> {     // TODO Undo Previous Transaction
-                        Transaction.undoLastTransaction();
-                    }
-                    case 5 -> // WaitList
-                        WaitingList.WaitList();
-                    case 6 -> {
-                        sPrint("Closing Program...");
-                        waitTime(3000);
-                        return;
-                    }
-                    default -> {
-                        continue;
-                    }
-                }
-                            } catch (InputMismatchException e) {
-                sPrint("Invalid Input");
-                scanner.nextLine();
-            }
-        }
+        Menu.mainMenu();
     }
 }
