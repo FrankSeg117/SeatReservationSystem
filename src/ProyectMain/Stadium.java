@@ -1414,13 +1414,14 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
 
 //TODO COMMENT THIS TOMAS PLEASE XOXO
     public static void WaitList(){
-        Scanner sc = new Scanner(System.in);
+        // Scanner sc = new Scanner(System.in);
 
         Menu.waitingListMenu();
 
         try{
             sPrint("Enter Option Number: ");
-            int option = sc.nextInt();
+            int option = scanner.nextInt();
+            scanner.nextLine();
 
             switch (option){
                 case 1:
@@ -1435,18 +1436,19 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
 
         } catch(InputMismatchException e){
             sPrint("Invalid input");
-            sc.nextLine();
+            scanner.nextLine();
         }
     }
     //TODO COMMENT THIS TOMAS PLEASE XOXO
     public static void showWaitingList() {
-        Scanner sc = new Scanner(System.in);
+        // Scanner sc = new Scanner(System.in);
         
         Menu.waitingListLevelMenu();
 
         try{
             sPrint("Enter Option Number: ");
-            int option = sc.nextInt();
+            int option = scanner.nextInt();
+            scanner.nextLine();
 
             switch (option){
                 case 1:
@@ -1485,12 +1487,12 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
 
         } catch(InputMismatchException e){
             sPrint("Invalid input");
-            sc.nextLine();
+            scanner.nextLine();
         }
     }
     //TODO COMMENT THIS TOMAS PLEASE XOXO
     public static void WLDequeHelper(){
-        Scanner sc = new Scanner(System.in);
+        // Scanner sc = new Scanner(System.in);
 
         sPrint("\nSelect WL to deque from");
         sPrint("1. Main Level WL"
@@ -1500,7 +1502,8 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
         
         try{
             sPrint("Enter Option Number: ");
-            int option = sc.nextInt();
+            int option = scanner.nextInt();
+            scanner.nextLine();
 
             switch (option){
                 case 1:
@@ -1518,7 +1521,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
 
         } catch(InputMismatchException e){
             sPrint("Invalid input");
-            sc.nextLine();
+            scanner.nextLine();
         }
     }
     //TODO COMMENT THIS TOMAS PLEASE XOXO
