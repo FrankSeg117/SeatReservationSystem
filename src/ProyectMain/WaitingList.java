@@ -1,8 +1,15 @@
 package ProyectMain;
 import java.util.*;
 
+/* This class handles the WaitLing Object, which allows for easier track of different functions to do
+ * IF a client is on the waiting list due to there being a level full, if a space opens up, this class
+ * handles the deque of the client.
+ * There will be 3 queues, for each of the 3 levels (field, main and grand stand)
+ */
+
 public class WaitingList {
 
+    /* Main menu for the waiting list option */
     public static void WaitList(){
         Stadium.sPrint("\\*Waiting list menu*\\\n");
         Stadium.sPrint("""
@@ -32,6 +39,7 @@ public class WaitingList {
         }
     }
     
+    /* This method allows the operator to view each of the waiting lists for each level */
     public static void showWaitingList() {
         Stadium.sPrint("\\*Select Waiting list to display*\\\n");
         Stadium.sPrint("""
@@ -87,6 +95,7 @@ public class WaitingList {
         }
     }
 
+    //TODO EXPLAIN WHAT THIS DOES
     public static void WLDequeHelper(){
 
         Stadium.sPrint("\nSelect WL to deque from");
