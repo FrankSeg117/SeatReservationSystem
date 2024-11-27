@@ -35,7 +35,7 @@ public class Menu{
                     }
                     case 3 -> // Show Reservation History
                         Transaction.printTransactionLinkedList(Stadium.transactionRegister, Stadium.scanner);
-                    case 4 -> {     // TODO Undo Previous Transaction
+                    case 4 -> {
                         Transaction.undoLastTransaction();
                     }
                     case 5 -> // WaitList
@@ -69,20 +69,22 @@ public class Menu{
             Stadium.sPrint("\n===UPRM Baseball Stadium Seat Manager===");
             Stadium.sPrint("\nPlease Select a Section: ");
             Stadium.sPrint( "1. Section A (Available Seats: " + (100 - Stadium.secFL.get('A').size()) + ")"
-                + "\n2. Section B (Available Seats: " + (100 - Stadium.secFL.get('B').size()) + ")"
-                + "\n3. Section C (Available Seats: " + (100 - Stadium.secFL.get('C').size()) + ")"
-                + "\n4. Section D (Available Seats: " + (100 - Stadium.secFL.get('D').size()) + ")"
-                + "\n5. Section E (Available Seats: " + (100 - Stadium.secFL.get('E').size()) + ")"
-                + "\n6. Return");
+                        + "\n2. Section B (Available Seats: " + (100 - Stadium.secFL.get('B').size()) + ")"
+                        + "\n3. Section C (Available Seats: " + (100 - Stadium.secFL.get('C').size()) + ")"
+                        + "\n4. Section D (Available Seats: " + (100 - Stadium.secFL.get('D').size()) + ")"
+                        + "\n5. Section E (Available Seats: " + (100 - Stadium.secFL.get('E').size()) + ")"
+                        + "\n6. Return");
         } else if (Stadium.fieldLevel.isEmpty()){
             Stadium.sPrint("\nNo seats available in Field Level\nWould you like to enter the Waiting List for this level? (Y/N)");
             String wList = Stadium.scanner.next();
             if(wList.equals("n")){
                 Stadium.sPrint("\nCancelling operation...");
                 Stadium.waitTime(1500);
+                Stadium.sPrint("Enter 6 to go back");
                 return;
             } else if(wList.equals("y")) {
                 WaitingList.fieldWaitListAdd(Stadium.client);
+                Stadium.sPrint("Enter 6 to go back");
                 return;
             }
         } 
@@ -90,26 +92,28 @@ public class Menu{
             Stadium.sPrint("\n===UPRM Baseball Stadium Seat Manager===");
             Stadium.sPrint("\nPlease Select a Section: ");
             Stadium.sPrint( "1. Section A (Available Seats: " + (100 - Stadium.secML.get('A').size()) + ")"
-                + "\n2. Section B (Available Seats: " + (100 - Stadium.secML.get('B').size()) + ")"
-                + "\n3. Section C (Available Seats: " + (100 - Stadium.secML.get('C').size()) + ")"
-                + "\n4. Section D (Available Seats: " + (100 - Stadium.secML.get('D').size()) + ")"
-                + "\n5. Section E (Available Seats: " + (100 - Stadium.secML.get('E').size()) + ")"
-                + "\n6. Section F (Available Seats: " + (100 - Stadium.secML.get('F').size()) + ")"
-                + "\n7. Section G (Available Seats: " + (100 - Stadium.secML.get('G').size()) + ")"
-                + "\n8. Section H (Available Seats: " + (100 - Stadium.secML.get('H').size()) + ")"
-                + "\n9. Section I (Available Seats: " + (100 - Stadium.secML.get('I').size()) + ")"
-                + "\n10. Section J (Available Seats: "+ (100 - Stadium.secML.get('J').size()) + ")"
-                + "\n11. Return"
-                + "\n12. Buy everything");
+                        + "\n2. Section B (Available Seats: " + (100 - Stadium.secML.get('B').size()) + ")"
+                        + "\n3. Section C (Available Seats: " + (100 - Stadium.secML.get('C').size()) + ")"
+                        + "\n4. Section D (Available Seats: " + (100 - Stadium.secML.get('D').size()) + ")"
+                        + "\n5. Section E (Available Seats: " + (100 - Stadium.secML.get('E').size()) + ")"
+                        + "\n6. Section F (Available Seats: " + (100 - Stadium.secML.get('F').size()) + ")"
+                        + "\n7. Section G (Available Seats: " + (100 - Stadium.secML.get('G').size()) + ")"
+                        + "\n8. Section H (Available Seats: " + (100 - Stadium.secML.get('H').size()) + ")"
+                        + "\n9. Section I (Available Seats: " + (100 - Stadium.secML.get('I').size()) + ")"
+                        + "\n10. Section J (Available Seats: "+ (100 - Stadium.secML.get('J').size()) + ")"
+                        + "\n11. Return"
+                        + "\n12. Buy everything");
         } else if(Stadium.mainLevel.isEmpty()) {
             Stadium.sPrint("\nNo seats available in Main Level\nWould you like to enter the Waiting List for this level? (Y/N)");
             String wList = Stadium.scanner.next();
             if(wList.equals("n")){
                 Stadium.sPrint("\nCancelling operation...");
                 Stadium.waitTime(1500);
+                Stadium.sPrint("Enter 11 to go back");
                 return;
             } else if(wList.equals("y")) {
                 WaitingList.mainWaitListAdd(Stadium.client);
+                Stadium.sPrint("Enter 11 to go back");
                 return;
             }
         }
@@ -118,23 +122,25 @@ public class Menu{
             Stadium.sPrint("\n===UPRM Baseball Stadium Seat Manager===");
             Stadium.sPrint("\nPlease Select a Section: ");
             Stadium.sPrint( "1. Section A (Available Seats: " + (250 - Stadium.secGSL.get('A').size()) + ")"
-                + "\n2. Section B (Available Seats: " + (250 - Stadium.secGSL.get('B').size()) + ")"
-                + "\n3. Section C (Available Seats: " + (250 - Stadium.secGSL.get('C').size()) + ")"
-                + "\n4. Section D (Available Seats: " + (250 - Stadium.secGSL.get('D').size()) + ")"
-                + "\n5. Section E (Available Seats: " + (250 - Stadium.secGSL.get('E').size()) + ")"
-                + "\n6. Section F (Available Seats: " + (250 - Stadium.secGSL.get('F').size()) + ")"
-                + "\n7. Section G (Available Seats: " + (250 - Stadium.secGSL.get('G').size()) + ")"
-                + "\n8. Section H (Available Seats: " + (250 - Stadium.secGSL.get('H').size()) + ")"
-                + "\n9. Return");
+                        + "\n2. Section B (Available Seats: " + (250 - Stadium.secGSL.get('B').size()) + ")"
+                        + "\n3. Section C (Available Seats: " + (250 - Stadium.secGSL.get('C').size()) + ")"
+                        + "\n4. Section D (Available Seats: " + (250 - Stadium.secGSL.get('D').size()) + ")"
+                        + "\n5. Section E (Available Seats: " + (250 - Stadium.secGSL.get('E').size()) + ")"
+                        + "\n6. Section F (Available Seats: " + (250 - Stadium.secGSL.get('F').size()) + ")"
+                        + "\n7. Section G (Available Seats: " + (250 - Stadium.secGSL.get('G').size()) + ")"
+                        + "\n8. Section H (Available Seats: " + (250 - Stadium.secGSL.get('H').size()) + ")"
+                        + "\n9. Return");
         } else if(Stadium.grandStandLevel.isEmpty()){
             Stadium.sPrint("\nNo seats available in Grand Stand Level\nWould you like to enter the Waiting List for this level? (Y/N)");
             String wList = Stadium.scanner.next();
             if(wList.equals("n")){
                 Stadium.sPrint("\nCancelling operation...");
                 Stadium.waitTime(1500);
+                Stadium.sPrint("Enter 9 to go back");
                 return;
             } else if(wList.equals("y")) {
                 WaitingList.grandWaitListAdd(Stadium.client);
+                Stadium.sPrint("Enter 9 to go back");
                 return;
             }
         }

@@ -102,7 +102,7 @@ public class Stadium {
     //Client global variable, which is created/replaced each time a new client is added to the system
     public static Client client;
 
-    public static Scanner scanner = new Scanner(System.in); //TODO MAKE THE CODE USE THIS SCANNER ONLY - There are still methods in waitinglist using local scanners.
+    public static Scanner scanner = new Scanner(System.in); //Main Class scanner
     
     // Method to print faster like Python, making code more readable, so we do not have to use System.out every time.
     public static void sPrint(String a) {System.out.println(a);} 
@@ -565,7 +565,7 @@ public class Stadium {
 
             sPrint("\nReturning Back...");
     
-            //Finally, we add the seats to purshased structures and remove them from the unbought set
+            //Finally, we add the seats to purchased structures and remove them from the unbought set
             for (Seat b : Seat) {
                 if(Level.equals("FieldLevel")){
                     for(Seat a: fieldLevel){
@@ -781,7 +781,7 @@ public class Stadium {
         while (MENU) {
             { // Verifies if there are seats still available
                 Menu.reservationMenu(level);
-            try {
+                try {
                 sPrint("Enter Option Number: ");
                 int input = scanner.nextInt();
                 scanner.nextLine();
@@ -1073,7 +1073,6 @@ public class Stadium {
         }
     }
 
-//TODO TEST IF UNDO OF TWO RESERVATIONS WORK WITH THIS CODE
 /* This method takes care of the initial steps for a cancelation, asking for the client's details and checking
 if said client exists in the system before proceeding*/ 
 public static void cancelReservation(){
@@ -1496,9 +1495,9 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
 
         sPrint("\nSelect WL to deque from");
         sPrint("1. Main Level WL"
-        + "\n2. Field level WL"
-        + "\n3. Grand stand level WL"
-        + "\n4. Cancel");
+           + "\n2. Field level WL"
+           + "\n3. Grand stand level WL"
+           + "\n4. Cancel");
         
         try{
             sPrint("Enter Option Number: ");
