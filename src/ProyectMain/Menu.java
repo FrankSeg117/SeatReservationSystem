@@ -1,8 +1,10 @@
 package ProyectMain;
 
 import java.util.InputMismatchException;
-import java.util.Scanner;
-
+/* This class handles large menu prints and inputs that classes use.
+ * It was made with the intent to reduce clutter in other classes so they can focus more on the logic while these
+ * manage inputs and prints said classes will use.
+ */
 public class Menu{
 
     public static void mainMenu(){
