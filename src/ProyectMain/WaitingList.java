@@ -15,7 +15,7 @@ public class WaitingList {
         Stadium.sPrint("""
                        Please select an option:
                        1. Show Waiting List
-                       2. Quit Waiting List
+                       2. Cancel Waiting List Spot
                        3. Exit""");
 
         try{
@@ -136,34 +136,44 @@ public class WaitingList {
         }
 
         if(!temp.contains(c)){Stadium.sPrint("Client deleted from Waiting List succesfully");}
-        Stadium.waitTime(3000);
+        Stadium.waitTime(1500);
 
-        while(!temp.isEmpty()){ // This makes the original queue return to its original state
-            levelWL.add(temp.poll());
-        }
+        // while(!temp.isEmpty()){ // This makes the original queue return to its original state
+        //     levelWL.add(temp.poll());
+        // }
+        return;
     }
 
     public static void mainWaitListAdd(Client c){
         if(!Stadium.mainWaitList.contains(c)){
+            Stadium.sPrint("Added client to waitList.");
             Stadium.mainWaitList.add(c);
+            Stadium.waitTime(2000);
         } else{
             Stadium.sPrint("Client already in Waiting List");
+            Stadium.waitTime(2000);
         }
     }
 
     public static void fieldWaitListAdd(Client c){
         if(!Stadium.fieldWaitList.contains(c)){
+            Stadium.sPrint("Added client to waitList.");
             Stadium.fieldWaitList.add(c);
+            Stadium.waitTime(2000);
         } else{
             Stadium.sPrint("Client already in Waiting List");
+            Stadium.waitTime(2000);
         }
     }
 
     public static void grandWaitListAdd(Client c){
         if(!Stadium.grandWaitList.contains(c)){
+            Stadium.sPrint("Added client to waitlist.");
             Stadium.grandWaitList.add(c);
+            Stadium.waitTime(2000);
         } else{
             Stadium.sPrint("Client already in Waiting List");
+            Stadium.waitTime(2000);
         }
     }
 
@@ -171,5 +181,75 @@ public class WaitingList {
         for (Client c : queue) {
             System.out.println(c.getName());
         } 
+    }
+
+    public static void SpaceAvailable(Client c, String level){
+        /// This method manipulates the waitlists so they are processed whenever there are seats available after a cancellation or an undo transaction
+        /// By level
+        if(Stadium.mainWaitList.isEmpty() && Stadium.fieldWaitList.isEmpty() && Stadium.grandWaitList.isEmpty()){
+            return;
+        }
+
+        ArrayList<Seat> seatForWL = new ArrayList<>();
+        
+        switch (level) {
+            case "FieldLevel": /// Switch is based on the level passed as the parameter
+                while(!Stadium.fieldLevel.isEmpty() && !Stadium.fieldWaitList.isEmpty()){
+                    /// While there are available seats and and the waitlist is not empty we continue to process it until either of them gets emptied
+                    ///This exact process is repeated for the cases of different levels below
+                        Seat seat = null;
+                        for(Seat s : Stadium.fieldLevel){
+                            seat = s;
+                            seatForWL.add(s);
+                            Stadium.fieldLevel.remove(s);
+                            break;
+                        }
+                        Stadium.FLseats.put(c, seatForWL);
+                        Stadium.secFL.get(seat.getSection()).add(seat);
+                        Transaction.undoStack.add(new Transaction(c, seatForWL, Seat.seatsTotalPrice(seatForWL, level) , "Reservation", level));
+                        Stadium.transactionRegister.add(new Transaction(c, seatForWL, Seat.seatsTotalPrice(seatForWL, level), "Reservation", level));
+                        WaitingListDeque(c, Stadium.fieldWaitList);
+                    }
+                
+                Stadium.sPrint("\nWaitlist has been updated.");
+                break;
+            case "MainLevel":
+                while(!Stadium.mainWaitList.isEmpty() && !Stadium.mainLevel.isEmpty()){
+                        Seat seat = null;
+                        for(Seat s : Stadium.mainLevel){
+                            seat = s;
+                            seatForWL.add(s);
+                            Stadium.mainLevel.remove(s);
+                            break;
+                        }
+                        Stadium.MLseats.put(c, seatForWL);
+                        Stadium.secML.get(seat.getSection()).add(seat);
+                        Transaction.undoStack.add(new Transaction(c, seatForWL, Seat.seatsTotalPrice(seatForWL, level) , "Reservation", level));
+                        Stadium.transactionRegister.add(new Transaction(c, seatForWL, Seat.seatsTotalPrice(seatForWL, level), "Reservation", level));
+                        WaitingListDeque(c, Stadium.mainWaitList);
+                }
+                Stadium.sPrint("\nWaitlist has been updated.");
+                break;
+            case "GrandStandLevel":
+                while(!Stadium.grandStandLevel.isEmpty() && !Stadium.grandWaitList.isEmpty()){
+                        Seat seat = null;
+                        for(Seat s : Stadium.grandStandLevel){
+                            seat = s;
+                            seatForWL.add(s);
+                            Stadium.grandStandLevel.remove(s);
+                            break;
+                        }
+                        Stadium.GSLseats.put(c, seatForWL);
+                        Stadium.secGSL.get(seat.getSection()).add(seat);
+                        Transaction.undoStack.add(new Transaction(c, seatForWL, Seat.seatsTotalPrice(seatForWL, level) , "Reservation", level));
+                        Stadium.transactionRegister.add(new Transaction(c, seatForWL, Seat.seatsTotalPrice(seatForWL, level), "Reservation", level));
+                        WaitingListDeque(c, Stadium.grandWaitList);
+                }
+                Stadium.sPrint("\nWaitlist has been updated.");
+                break;
+            default:
+                break;
+        }
+        return;
     }
 }

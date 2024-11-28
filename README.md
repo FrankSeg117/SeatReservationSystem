@@ -1,12 +1,16 @@
 ## Main course Data Structures Project
 
-Welcome to our humble repository. Here, you will see the source code for our course project for our data structures class.
+Welcome to our humble repository. Here, you will see the source code of our course project for our data structures class.
 
 ## What is this project?
 
-In this project, we implemented a system for seat reservation in a baseball stadium. This system manages the available seats, client reservations, and a waitlist for a section that may be full. The system allows a user to reserve an available seat, cancel reservations, see the availability of free seats, undo the recent transactions, and view a transaction history. 
+In this project, we implemented a system for seat reservation in a baseball stadium. This system manages the available seats, client reservations, and a waitlist for a section that may be full. The system allows a user to reserve an available seat, cancel reservations, see the currently available seats, undo the most recent transactions, and view a transaction history.
+
+We also added a feature where you can visualize the seats in a diagram format to be more clear of their distribution when the operator is making a reservation.
 
 ### Key Details
+
+- Implementation wa
 
 ### Stadium Sections and Pricing
 

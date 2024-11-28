@@ -3,7 +3,7 @@ import ProyectMain.Stadium;
 
 /* Main File for the Seat Reservation System for the UPRM Baseball Stadium
  * by Frank A. Seguí, Jonathan González and Tomás Gómez
- * Project for the Data Structures Course in Fall 2024
+ * Project for the Data Structures Course in Fall 2
  */
 
 public class App {

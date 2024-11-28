@@ -103,6 +103,7 @@ public class Transaction {
             return;
         }
         for (int i = 0; i < transactionLinkedList.size(); i++) { //Loop to print every transaction inside the linkedlist
+            System.out.println(transactionLinkedList.size());
             System.out.println("\nTransaction Number: " + (i + 1) + " {");
             System.out.println(transactionLinkedList.get(i).toString());
         }
@@ -128,6 +129,10 @@ public class Transaction {
     @Override
     public String toString() {
         StringBuilder seatsInfo = new StringBuilder();
+        if(rseats.isEmpty()){
+            System.out.println("Array empty");
+            return null;
+        }
         seatsInfo.append(this.getLevel() + "/Section " + rseats.get(0).getSection() + ": ");
 
         for (Seat seat : rseats) {

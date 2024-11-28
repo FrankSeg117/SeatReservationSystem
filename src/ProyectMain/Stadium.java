@@ -25,8 +25,8 @@ public class Stadium {
      * Sets
      */
     //Unreserved Seats - Here all unreserved seats are stored. this allows quick storage when canceling a reservation.
-    public static Set<Seat> mainLevel = new HashSet<>(); 
     public static Set<Seat> fieldLevel = new HashSet<>();
+    public static Set<Seat> mainLevel = new HashSet<>(); 
     public static Set<Seat> grandStandLevel = new HashSet<>();
     
     //This sets are for the storage of future bought seats which will be stored on dictionaries below
@@ -101,6 +101,11 @@ public class Stadium {
 
     //Client global variable, which is created/replaced each time a new client is added to the system
     public static Client client;
+
+    /* These flags are used when a level becomes full, so the waitlist logic can trigger correctly */
+    public static boolean lastSeatField = false;
+    public static boolean lastSeatMain = false;
+    public static boolean lastSeatGrandStand = false;
 
     public static Scanner scanner = new Scanner(System.in); //Main Class scanner
     
@@ -474,10 +479,10 @@ public class Stadium {
         return 2; 
     }
 
-    /* This method buys a certain amounts of seats specified by the arraylist and 
+    /* This method buys a certain amounts of seats specified by the arraylist  
      * and register the transaction in the name of the given client.
      * It takes as a paramter said ArrayList of previously owned seats, a section for the level passed, an Array of the new seats
-     * and a undo flag to streamline the operation if we know its an Undo. */
+     * and an undo flag to streamline the operation if we know its an Undo. */
     @SuppressWarnings({"Unnecessary return statement", "UnnecessaryReturnStatement"}) // This avoids a warning
     public static void Buy(ArrayList<Seat> Seat, Character sec, String Level, ArrayList<Seat> newSeats, boolean Undo) {
         int price = 0;
@@ -776,11 +781,20 @@ public class Stadium {
     This method is the main for reservsastions. It shows available spaces on each section and allows the operator
     to select wether to enter a waitlist if full, buy all, or a certein amount of seats
     */ 
-    public static void Reservation(String level) {        
+    public static void Reservation(String level) { 
         boolean MENU = true;
         while (MENU) {
             { // Verifies if there are seats still available
                 Menu.reservationMenu(level);
+                if(lastSeatField && level.equals("FieldLevel")){
+                    return;
+                }
+                if(lastSeatMain && level.equals("MainLevel")){
+                    return;
+                }
+                if(lastSeatGrandStand && level.equals("GrandStandLevel")){
+                    return;
+                }
                 try {
                 sPrint("Enter Option Number: ");
                 int input = scanner.nextInt();
@@ -967,17 +981,6 @@ public class Stadium {
                         }
                     case 11:
                         return;
-                    case 12: // Just for testing of WL methods
-                        BuyAll('A', level);
-                        BuyAll('B', level);
-                        BuyAll('C', level);
-                        BuyAll('D', level);
-                        BuyAll('E', level);
-                        BuyAll('F', level);
-                        BuyAll('G', level);
-                        BuyAll('H', level);
-                        BuyAll('I', level);
-                        BuyAll('J', level);
                     default:
                         continue;
                 }
@@ -1100,9 +1103,11 @@ public static void cancelReservation(){
             sPrint("Invalid input.");
         }
     }
+    
     boolean fieldflag = false;
     boolean mainflag = false;
     boolean grandflag = false;
+
     if(FLseats.keySet().contains(canceledClient)){
         fieldflag = true;
     }
@@ -1112,7 +1117,9 @@ public static void cancelReservation(){
     if(GSLseats.keySet().contains(canceledClient)){
         grandflag = true;
     }
+    
     boolean menu2 = false;
+    
     while(!menu2){
         sPrint("Select the level to cancel:");
         if(fieldflag){ sPrint(" 1. Field Level");}
@@ -1167,7 +1174,7 @@ public static void cancelContinuation(String level, Client client, boolean Undo,
     if(Undo){
         seatsToReturn = optionalSeatList; //Here we will store the seats to unreserve in the case of an Undo
         if(seatsToReturn.isEmpty()){
-            sPrint("No reservations were canceled.");
+            sPrint("No reservations were cancelled.");
             waitTime(2000);
             return;
         }
@@ -1219,6 +1226,8 @@ public static void cancelContinuation(String level, Client client, boolean Undo,
         sPrint("Due balance of $" + price +  " has been returned");
         returnSeats(seatsToReturn, level);
         transactionRegister.add(new Transaction(client, seatsToReturn, price, "Cancelation", level)); 
+        //TODO ADD WAITLIST THING
+        WaitingList.SpaceAvailable(client, level);
         waitTime(2000);
         return;
     }
@@ -1336,6 +1345,7 @@ public static void cancelContinuation(String level, Client client, boolean Undo,
                 waitTime(2000);
                 transactionRegister.add(new Transaction(client, seatsToReturn, price, "Cancelation", level)); 
                 Transaction.undoStack.add(new Transaction(client, seatsToReturn, price, "Cancelation", level));
+                WaitingList.SpaceAvailable(client, level); //Check for availability on waitlist
                 return;
             }
             //Client wants to cancel all reservations
@@ -1379,6 +1389,7 @@ public static void cancelContinuation(String level, Client client, boolean Undo,
                 }
                 transactionRegister.add(new Transaction(client, seatsToReturn, price, "Cancelation", level)); 
                 Transaction.undoStack.add(new Transaction(client, seatsToReturn, price, "Cancelation", level));
+                WaitingList.SpaceAvailable(client, level); //Check for availability on waitlist
                 waitTime(2000);
                 return;
             }
@@ -1523,7 +1534,6 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
             scanner.nextLine();
         }
     }
-    //TODO COMMENT THIS TOMAS PLEASE XOXO
     public static void WaitingListDeque(Client c, Queue<Client> levelWL){
         Queue<Client> temp = new LinkedList<>();
 
