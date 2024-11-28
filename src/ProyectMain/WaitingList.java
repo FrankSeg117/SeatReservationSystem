@@ -95,7 +95,6 @@ public class WaitingList {
         }
     }
 
-    //TODO EXPLAIN WHAT THIS DOES
     public static void WLDequeHelper(){
 
         Stadium.sPrint("\nSelect WL to deque from");

@@ -1226,7 +1226,6 @@ public static void cancelContinuation(String level, Client client, boolean Undo,
         sPrint("Due balance of $" + price +  " has been returned");
         returnSeats(seatsToReturn, level);
         transactionRegister.add(new Transaction(client, seatsToReturn, price, "Cancelation", level)); 
-        //TODO ADD WAITLIST THING
         WaitingList.SpaceAvailable(client, level);
         waitTime(2000);
         return;
@@ -1422,7 +1421,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
     }
 }
 
-//TODO COMMENT THIS TOMAS PLEASE XOXO
+//This method triggers the call for the waitlist methods
     public static void WaitList(){
         // Scanner sc = new Scanner(System.in);
 
@@ -1432,7 +1431,6 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
             sPrint("Enter Option Number: ");
             int option = scanner.nextInt();
             scanner.nextLine();
-
             switch (option){
                 case 1:
                     showWaitingList();
@@ -1449,7 +1447,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
             scanner.nextLine();
         }
     }
-    //TODO COMMENT THIS TOMAS PLEASE XOXO
+    //Method that shows people on the waitlist
     public static void showWaitingList() {
         // Scanner sc = new Scanner(System.in);
         
@@ -1500,7 +1498,7 @@ public static void returnSeats(ArrayList<Seat> seatsToReturn, String level) {
             scanner.nextLine();
         }
     }
-    //TODO COMMENT THIS TOMAS PLEASE XOXO
+    //Method that deques clients from waitlists
     public static void WLDequeHelper(){
         // Scanner sc = new Scanner(System.in);
 
